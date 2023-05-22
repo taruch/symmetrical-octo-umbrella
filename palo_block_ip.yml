@@ -1,0 +1,28 @@
+- name: Block IP in Palo Firewall
+  hosts: panos-fw
+  connection: local
+  gather_facts: False
+
+
+#  vars:
+#    device:
+#      ip_address: '{{ ip_address }}'
+#      username: '{{ username | default(omit) }}'
+#      password: '{{ password | default(omit) }}'
+#      api_key: '{{ api_key | default(omit) }}'
+
+  tasks:
+    - name: Create first security rule
+      paloaltonetworks.panos.panos_security_rule:
+        provider: '{{ provider }}'
+        rule_name: 'Block Web'
+        source_zone: ['Untrust']
+        destination_zone: ['Web']
+        source_ip: ['71.244.221.4', '71.244.221.3']
+        destination_ip: ['any']
+        application: ['any']
+        service: ['service-http']
+        action: 'deny'
+        state: 'merged'
+        #tag_name: ['Prod']
+        commit: False
