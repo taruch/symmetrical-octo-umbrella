@@ -26,4 +26,4 @@
         action: 'deny'
         state: 'merged'
         #tag_name: ['Prod']
-        commit: False
+        commit: True
