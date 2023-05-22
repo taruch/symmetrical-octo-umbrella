@@ -1,7 +1,11 @@
 - name: Block IP in Palo Firewall
-  hosts: panos-fw
+  hosts: localhost
   connection: local
   gather_facts: False
+ 
+  collections:
+    - paloaltonetworks.panos
+
 
 
 #  vars:
