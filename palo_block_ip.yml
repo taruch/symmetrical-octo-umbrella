@@ -18,7 +18,7 @@
   tasks:
     - name: print provider
       ansible.builtin.debug:
-      var: provider
+        var: provider
 
     - name: Update security rule Block Web
       paloaltonetworks.panos.panos_security_rule:
