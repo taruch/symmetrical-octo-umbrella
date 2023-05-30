@@ -1,5 +1,5 @@
 - name: Block IP in Palo Firewall
-  hosts: panos-fw
+  hosts: all
   connection: local
   gather_facts: False
  
