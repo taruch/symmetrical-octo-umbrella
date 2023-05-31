@@ -6,15 +6,6 @@
   collections:
     - paloaltonetworks.panos
 
-
-
-#  vars:
-#    device:
-#      ip_address: '{{ ip_address }}'
-#      username: '{{ username | default(omit) }}'
-#      password: '{{ password | default(omit) }}'
-#      api_key: '{{ api_key | default(omit) }}'
-
   tasks:
     - name: print provider
       ansible.builtin.debug:
