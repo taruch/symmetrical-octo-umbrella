@@ -27,6 +27,6 @@
   - name: set stats
     ansible.builtin.set_stats:
       data:
-        location_data: location
+        location_data: "{{ location }}"
 
 ...
