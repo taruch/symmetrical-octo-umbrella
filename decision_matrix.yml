@@ -1,0 +1,26 @@
+---
+- name: Decide whether approval is required to block IP
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    bad_countries:
+      - "China"
+      - "United States of America"
+    location_data: { "71.244.221.3": "United States of America" }
+
+  tasks:
+    - name: debug location_data
+      ansible.builtin.debug:
+        var: location_data | type_debug
+   
+    - name: debug location_data innards
+      ansible.builtin.debug:
+        var: item.value
+      loop: "{{ query('ansible.builtin.dict', location_data) }}"
+
+    - name: debug location_data innards
+      ansible.builtin.set_fact:
+        location: item.value
+      loop: "{{ query('ansible.builtin.dict', location_data) }}"
+      failed_when: "item.value in bad_countries "
