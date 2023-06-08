@@ -7,7 +7,7 @@
     bad_countries:
       - "China"
       - "United States of America"
-    location_data: { "71.244.221.3": "United States of America" }
+    #location_data: { "71.244.221.3": "United States of America" }
 
   tasks:
     - name: debug location_data
@@ -23,4 +23,4 @@
       ansible.builtin.set_fact:
         location: item.value
       loop: "{{ query('ansible.builtin.dict', location_data) }}"
-      failed_when: "item.value in bad_countries "
+      failed_when: "item.value not in bad_countries "
