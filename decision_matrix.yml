@@ -21,7 +21,7 @@
         - 'never'
         - 'debug'
 
-    - name: fail when the ip geolocation isn't in a bad country (allows workflow to continue without hotl)
+    - name: fail when the ip geolocation isn't in a bad country (workflow requires approval)
       ansible.builtin.set_fact:
         location: item.value
       loop: "{{ query('ansible.builtin.dict', location_data) }}"
