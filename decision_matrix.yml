@@ -3,10 +3,10 @@
   hosts: localhost
   gather_facts: false
 
-  vars:
-    bad_countries:
-      - "China"
-      - "United States of America"
+  #vars:
+    #bad_countries:
+    #  - "China"
+    #  - "United States of America"
     #location_data: { "71.244.221.3": "United States of America" }
 
   tasks:
