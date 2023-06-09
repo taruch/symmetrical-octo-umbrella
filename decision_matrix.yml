@@ -12,9 +12,9 @@
     #location_data: { "71.244.221.3": "United States of America" }
 
   tasks:
-    - name: debug location_data
+    - name: debug bad_decisions
       ansible.builtin.debug:
-        var: location_data | type_debug
+        var: bad_decisions
    
     - name: debug location_data innards
       ansible.builtin.debug:
