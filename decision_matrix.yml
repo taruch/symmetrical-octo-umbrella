@@ -2,6 +2,8 @@
 - name: Decide whether approval is required to block IP
   hosts: localhost
   gather_facts: false
+  vars_files:
+    - ./vars/bad_countries.yml
 
   #vars:
     #bad_countries:
