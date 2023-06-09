@@ -9,13 +9,17 @@
     - name: debug bad_decisions
       ansible.builtin.debug:
         var: bad_countries
-      tags: debug
+      tags: 
+        - 'never'
+        - 'debug'
    
     - name: debug location_data innards
       ansible.builtin.debug:
         var: item.value
       loop: "{{ query('ansible.builtin.dict', location_data) }}"
-      tags: debug
+      tags: 
+        - 'never'
+        - 'debug'
 
     - name: fail when the ip geolocation isn't in a bad country (allows workflow to continue without hotl)
       ansible.builtin.set_fact:
