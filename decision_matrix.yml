@@ -14,7 +14,7 @@
   tasks:
     - name: debug bad_decisions
       ansible.builtin.debug:
-        var: bad_decisions
+        var: bad_countries
    
     - name: debug location_data innards
       ansible.builtin.debug:
