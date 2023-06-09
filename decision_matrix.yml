@@ -5,23 +5,19 @@
   vars_files:
     - ./vars/bad_countries.yml
 
-  #vars:
-    #bad_countries:
-    #  - "China"
-    #  - "United States of America"
-    #location_data: { "71.244.221.3": "United States of America" }
-
   tasks:
     - name: debug bad_decisions
       ansible.builtin.debug:
         var: bad_countries
+      tags: debug
    
     - name: debug location_data innards
       ansible.builtin.debug:
         var: item.value
       loop: "{{ query('ansible.builtin.dict', location_data) }}"
+      tags: debug
 
-    - name: debug location_data innards
+    - name: fail when the ip geolocation isn't in a bad country (allows workflow to continue without hotl)
       ansible.builtin.set_fact:
         location: item.value
       loop: "{{ query('ansible.builtin.dict', location_data) }}"
