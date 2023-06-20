@@ -16,3 +16,9 @@
         urgency: med
         other:
           expected_start: "{{ lookup('pipe','date +%Y%m%d%H%M%S')}}"
+      register: incident_out
+
+    - name: Set Incident Number
+      ansible.builtin.set_stats:
+        data:
+          ServiceNow_Incident_Number: incident_out.record.number
