@@ -8,7 +8,7 @@
     - name: Create incident
       servicenow.itsm.incident:
         instance:
-          host: "{{ sn_instance }}"
+          host: "{{ sn_host }}"
           username: "{{ sn_username }}"
           password: "{{ sn_password }}"
         state: new
