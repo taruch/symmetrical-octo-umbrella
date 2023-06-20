@@ -6,22 +6,24 @@
 
   tasks:
     - name: Create incident
-      servicenow.itsm.incident:
+      servicenow.itsm.change_request:
         instance:
           host: "{{ SN_HOST }}"
           username: "{{ SN_USERNAME }}"
           password: "{{ SN_PASSWORD }}"
         state: new
-        caller: splunk_ansible_workflow
+        type: standard
+        requested_by: splunk_ansible_workflow
         short_description: Block IP Workflow
         description: Splunk AAP workflow blocking IP - ticket review
-        impact: med
-        urgency: med
+        priority: moderate
+        impact: low
+        risk: low
         other:
           expected_start: "{{ lookup('pipe','date +%Y%m%d%H%M%S')}}"
-      register: incident_out
+      register: change_out
 
-    - name: Set Incident Number
+    - name: Set change Number
       ansible.builtin.set_stats:
         data:
-          ServiceNow_Incident_Number: "{{ incident_out.record.number }}"
+          ServiceNow_Change_Number: "{{ change_out.record.number }}"
