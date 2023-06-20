@@ -8,9 +8,9 @@
     - name: Create incident
       servicenow.itsm.incident:
         instance:
-          host: "{{ sn_host }}"
-          username: "{{ sn_username }}"
-          password: "{{ sn_password }}"
+          host: "{{ SN_HOST }}"
+          username: "{{ SN_USERNAME }}"
+          password: "{{ SN_PASSWORD }}"
         state: new
         caller: splunk_ansible_workflow
         short_description: Block IP Workflow
