@@ -7,7 +7,10 @@
   tasks:
     - name: Create incident
       servicenow.itsm.incident:
-        instance: "{{ network_Splunk_Ansible_SNOW_Workflow }}"
+        instance:
+          host: "{{ sn_instance }}"
+          username: "{{ sn_username }}"
+          password: "{{ sn_password }}"
         state: new
         caller: splunk_ansible_workflow
         short_description: Block IP Workflow
