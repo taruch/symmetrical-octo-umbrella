@@ -3,17 +3,17 @@
   hosts: localhost
   gather_facts: false
   vars_files:
-    - ./vars/bad_countries.yml
+    - ./vars/country_list.yml
 
   tasks:
-    - name: debug bad_decisions
+    - name: Print out Country List
       ansible.builtin.debug:
-        var: bad_countries
+        var: country_list
       tags: 
         - 'never'
         - 'debug'
    
-    - name: debug location_data innards
+    - name: Print out location_data from ip lookup
       ansible.builtin.debug:
         var: item.value
       loop: "{{ query('ansible.builtin.dict', location_data) }}"
@@ -21,8 +21,8 @@
         - 'never'
         - 'debug'
 
-    - name: fail when the ip geolocation isn't in a bad country (workflow requires approval)
+    - name: fail (workflow requires approval) when the ip geolocation isn't in the country list
       ansible.builtin.set_fact:
         location: item.value
       loop: "{{ query('ansible.builtin.dict', location_data) }}"
-      failed_when: "item.value not in bad_countries "
+      failed_when: "item.value not in country_list"
