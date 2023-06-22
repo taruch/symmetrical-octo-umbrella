@@ -12,18 +12,29 @@
           username: "{{ SN_USERNAME }}"
           password: "{{ SN_PASSWORD }}"
         state: new
-        type: standard
+        type: emergency
         requested_by: splunk_ansible_workflow
         short_description: Block IP Workflow
         description: Splunk AAP workflow blocking IP - ticket review
-        priority: moderate
+        priority: high
         impact: low
         risk: low
+        category: network
         other:
-          expected_start: "{{ lookup('pipe','date +%Y%m%d%H%M%S')}}"
+          planned_start: "{{ lookup('pipe','date +%Y%m%d%H%M%S')}}"
+          answer: true
       register: change_out
+     
+    - name: Set fact for change number
+      ansible.builtin.set_fact:
+        #change_number: 'CHG0030022'
+        change_number: "{{ change_out.record.number }}"
+
+    - name: Debug change number
+      debug:
+        msg: "{{ change_number }}"
 
     - name: Set change Number
       ansible.builtin.set_stats:
         data:
-          ServiceNow_Change_Number: "{{ change_out.record.number }}"
+          change_number: "{{ change_number }}"
