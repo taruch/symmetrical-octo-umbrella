@@ -25,5 +25,5 @@
         commit: False
 
     - name: Commit candidate config on firewall
-      paloaltonetworks.panos.panos_commit:
+      paloaltonetworks.panos.panos_commit_firewall:
         provider: '{{ provider }}'
