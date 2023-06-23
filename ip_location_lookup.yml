@@ -7,12 +7,11 @@
 
   - name: look up location
     ansible.builtin.uri:
-      url: https://api.iplocation.net/?ip={{ item  }}
+      url: https://api.iplocation.net/?ip={{ block_ip  }}
       method: GET
       status_code: 200
       headers:
         Content-Type: application/json
-    loop: "{{ splunk_host_list }}"
     register: location_output
 
   - name: set location facts
