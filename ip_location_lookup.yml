@@ -2,8 +2,6 @@
 - name: Look up the location country for an IP address
   hosts: localhost
   gather_facts: false
-  vars:
-    block_ip: '1.1.1.1'
 
   tasks:
 
@@ -19,11 +17,6 @@
   - name: set location facts
     ansible.builtin.set_fact:
       location: "{{ location | default({}) | combine ({ location_output.json.ip : location_output.json.country_name }) }}"
-
-#  - name: set location facts
-#    ansible.builtin.set_fact:
-#      location: "{{ location | default({}) | combine ({ item.json.ip : item.json.country_name }) }}"
-#    loop: "{{ location_output.results }}"
 
   - name: debug_output
     ansible.builtin.debug:
