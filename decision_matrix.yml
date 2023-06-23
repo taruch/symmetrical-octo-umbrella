@@ -22,7 +22,9 @@
         - 'debug'
 
     - name: fail (workflow requires approval) when the ip geolocation isn't in the country list
-      ansible.builtin.set_fact:
-        location: item.value
+      ansible.builtin.assert:
+        that: 
+          - "item.value in country_list"
+        #location: item.value
       loop: "{{ query('ansible.builtin.dict', location_data) }}"
-      failed_when: "item.value not in country_list"
+      #failed_when: "item.value not in country_list"
