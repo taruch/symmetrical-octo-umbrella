@@ -14,14 +14,11 @@
         source_zone: ['Untrust']
         destination_zone: ['Web']
         source_ip: '{{ block_ip }}'
-        #source_ip: ['71.244.221.4', '71.244.221.3']
         destination_ip: ['any']
         application: ['any']
         service: ['any']
-        #service: ['service-http']
         action: 'deny'
         state: 'merged'
-        #tag_name: ['Prod']
         commit: False
 
     - name: Commit candidate config on firewall
