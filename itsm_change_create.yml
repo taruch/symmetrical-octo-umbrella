@@ -15,7 +15,7 @@
         type: emergency
         requested_by: splunk_ansible_workflow
         short_description: Block IP Workflow
-        description: Splunk AAP workflow blocking IP - ticket review
+        description: "Splunk AAP workflow blocking IP: {{ block_ip }}"
         priority: high
         impact: low
         risk: low
