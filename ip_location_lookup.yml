@@ -1,0 +1,30 @@
+---
+- name: Look up the location country for an IP address
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+
+  - name: look up location
+    ansible.builtin.uri:
+      url: "https://api.iplocation.net/?ip={{ block_ip  }}"
+      method: GET
+      status_code: 200
+      headers:
+        Content-Type: application/json
+    register: location_output
+
+  - name: set location facts
+    ansible.builtin.set_fact:
+      location: "{{ location | default({}) | combine ({ location_output.json.ip : location_output.json.country_name }) }}"
+
+  - name: debug_output
+    ansible.builtin.debug:
+      var: location
+
+  - name: set stats
+    ansible.builtin.set_stats:
+      data:
+        location_data: "{{ location }}"
+
+...

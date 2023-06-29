@@ -1,0 +1,4 @@
+---
+collections:
+  - name: paloaltonetworks.panos
+  - name: servicenow.itsm

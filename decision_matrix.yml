@@ -1,0 +1,28 @@
+---
+- name: Decide whether approval is required to block IP
+  hosts: localhost
+  gather_facts: false
+  vars_files:
+    - ./vars/country_list.yml
+
+  tasks:
+    - name: Print out Country List
+      ansible.builtin.debug:
+        var: country_list
+      tags: 
+        - 'never'
+        - 'debug'
+   
+    - name: Print out location_data from ip lookup
+      ansible.builtin.debug:
+        var: item.value
+      loop: "{{ query('ansible.builtin.dict', location_data) }}"
+      tags: 
+        - 'never'
+        - 'debug'
+
+    - name: fail (workflow requires approval) when the ip geolocation isn't in the country list
+      ansible.builtin.assert:
+        that: 
+          - "item.value in country_list"
+      loop: "{{ query('ansible.builtin.dict', location_data) }}"

@@ -1,0 +1,26 @@
+- name: Block IP in Palo Firewall
+  hosts: all
+  connection: local
+  gather_facts: False
+ 
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    - name: Update security rule Block Web
+      paloaltonetworks.panos.panos_security_rule:
+        provider: '{{ provider }}'
+        rule_name: 'Block Host'
+        source_zone: ['Untrust']
+        destination_zone: ['Web']
+        source_ip: '{{ block_ip }}'
+        destination_ip: ['any']
+        application: ['any']
+        service: ['any']
+        action: 'deny'
+        state: 'merged'
+        commit: False
+
+    - name: Commit candidate config on firewall
+      paloaltonetworks.panos.panos_commit_firewall:
+        provider: '{{ provider }}'

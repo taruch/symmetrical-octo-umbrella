@@ -1,0 +1,27 @@
+---
+- name: Create an incident ticket in ServiceNow
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Create incident
+      servicenow.itsm.incident:
+        instance:
+          host: "{{ SN_HOST }}"
+          username: "{{ SN_USERNAME }}"
+          password: "{{ SN_PASSWORD }}"
+        state: new
+        caller: splunk_ansible_workflow
+        short_description: Block IP Workflow
+        description: Splunk AAP workflow blocking IP - ticket review
+        impact: med
+        urgency: med
+        other:
+          expected_start: "{{ lookup('pipe','date +%Y%m%d%H%M%S')}}"
+      register: incident_out
+
+    - name: Set Incident Number
+      ansible.builtin.set_stats:
+        data:
+          ServiceNow_Incident_Number: "{{ incident_out.record.number }}"
+
