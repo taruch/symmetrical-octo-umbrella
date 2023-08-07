@@ -1,0 +1,43 @@
+---
+
+- name: Create ServiceNow incident ticket
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Mark change request as implement
+      servicenow.itsm.change_request:
+        instance:
+          host: "{{ SN_HOST }}"
+          username: "{{ SN_USERNAME }}"
+          password: "{{ SN_PASSWORD }}"
+        number: "{{ change_number }}"
+        state: implement
+        #assignment_group: 'Change Management'
+      register: change_out
+
+    - name: Print change results
+      ansible.builtin.debug:
+        var: change_out
+        verbosity: 3
+
+    - name: Mark change request as review
+      servicenow.itsm.change_request:
+        instance:
+          host: "{{ SN_HOST }}"
+          username: "{{ SN_USERNAME }}"
+          password: "{{ SN_PASSWORD }}"
+        number: "{{ change_number }}"
+        state: review
+        assignment_group: 'Change Management'
+      register: change_out
+
+    - name: Print change results
+      ansible.builtin.debug:
+        var: change_out
+        verbosity: 3
+
+    #- name: Set fact for change number
+    #  ansible.builtin.set_fact:
+    #    change_number: "{{ change_out.record.number }}"
+
