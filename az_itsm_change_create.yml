@@ -1,0 +1,86 @@
+---
+
+- name: Create ServiceNow change request ticket
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Create change request ticket
+      servicenow.itsm.change_request:
+        instance:
+          host: "{{ SN_HOST }}"
+          username: "{{ SN_USERNAME }}"
+          password: "{{ SN_PASSWORD }}"
+        state: new
+        type: emergency
+        requested_by: ansible_workflow
+        short_description: "{{ ticket_short_description }}"
+        description: "{{ ticket_long_description }}"
+        priority: high
+        impact: low
+        risk: low
+        category: network
+        other:
+          planned_start: "{{ lookup('pipe','date +%Y%m%d%H%M%S')}}"
+          answer: true
+      register: change_out
+
+    - name: Print change results 
+      ansible.builtin.debug:
+        var: change_out
+        verbosity: 3
+     
+
+    - name: Set fact for change number
+      ansible.builtin.set_fact:
+        #change_number: 'CHG0030022'
+        change_number: "{{ change_out.record.number }}"
+
+
+    - name: Mark change request as authorize
+      servicenow.itsm.change_request:
+        instance:
+          host: "{{ SN_HOST }}"
+          username: "{{ SN_USERNAME }}"
+          password: "{{ SN_PASSWORD }}"
+        number: "{{ change_number }}"
+        state: authorize
+        on_hold: false
+        assignment_group: 'Change Management'
+        other:
+          planned_start: "{{ lookup('pipe','date +%Y%m%d%H%M%S')}}"
+          answer: true
+      register: change_out
+
+    - name: Print change results
+      ansible.builtin.debug:
+        var: change_out
+        verbosity: 3
+ 
+    - name: Mark change request as scheduled
+      servicenow.itsm.change_request:
+        instance:
+          host: "{{ SN_HOST }}"
+          username: "{{ SN_USERNAME }}"
+          password: "{{ SN_PASSWORD }}"
+        number: "{{ change_number }}"
+        state: scheduled
+        assignment_group: 'Change Management'
+        on_hold: false
+      register: change_out
+
+    - name: Print change results
+      ansible.builtin.debug:
+        var: change_out
+        verbosity: 3
+
+
+    - name: Print change number
+      debug:
+        msg: "{{ change_number }}"
+        verbosity: 2
+
+    - name: Set change Number
+      ansible.builtin.set_stats:
+        data:
+          change_number: "{{ change_number }}"
