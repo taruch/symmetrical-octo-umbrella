@@ -1,11 +1,11 @@
 ---
 
-- name: Create ServiceNow incident ticket
+- name: Create ServiceNow change request ticket
   hosts: localhost
   gather_facts: false
 
   tasks:
-    - name: Create incident
+    - name: Create change request ticket
       servicenow.itsm.change_request:
         instance:
           host: "{{ SN_HOST }}"
@@ -14,8 +14,8 @@
         state: new
         type: emergency
         requested_by: splunk_ansible_workflow
-        short_description: Block IP Workflow
-        description: "Splunk AAP workflow blocking IP: {{ block_ip }}"
+        short_description: "{{ ticket_short_description }}"
+        description: "{{ ticket_long_description }}"
         priority: high
         impact: low
         risk: low
@@ -24,15 +24,21 @@
           planned_start: "{{ lookup('pipe','date +%Y%m%d%H%M%S')}}"
           answer: true
       register: change_out
+
+    - name: Print change results 
+      ansible.builtin.debug:
+        var: change_out
+        verbosity: 3
      
     - name: Set fact for change number
       ansible.builtin.set_fact:
         #change_number: 'CHG0030022'
         change_number: "{{ change_out.record.number }}"
 
-    - name: Debug change number
+    - name: Print change number
       debug:
         msg: "{{ change_number }}"
+        verbosity: 2
 
     - name: Set change Number
       ansible.builtin.set_stats:

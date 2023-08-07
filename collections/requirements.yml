@@ -2,3 +2,4 @@
 collections:
   - name: paloaltonetworks.panos
   - name: servicenow.itsm
+  - name: community.general

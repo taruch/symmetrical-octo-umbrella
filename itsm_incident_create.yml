@@ -12,13 +12,18 @@
           password: "{{ SN_PASSWORD }}"
         state: new
         caller: splunk_ansible_workflow
-        short_description: Block IP Workflow
-        description: Splunk AAP workflow blocking IP - ticket review
+        short_description: "{{ short_description  }}"
+        description: "{{ long_description }}"
         impact: med
         urgency: med
         other:
           expected_start: "{{ lookup('pipe','date +%Y%m%d%H%M%S')}}"
       register: incident_out
+    
+    - name: Print output of create incident
+      ansible.builtin.debug:
+        var: incident_out
+        verbosity: 3
 
     - name: Set Incident Number
       ansible.builtin.set_stats:
