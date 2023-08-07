@@ -5,33 +5,36 @@
   gather_facts: false
 
   tasks:
-    - name: Mark change request as implement
+    - name: Mark change request as authorize
       servicenow.itsm.change_request:
         instance:
           host: "{{ SN_HOST }}"
           username: "{{ SN_USERNAME }}"
           password: "{{ SN_PASSWORD }}"
         number: "{{ change_number }}"
-        state: implement
+        state: authorize
+        on_hold: false
+        assignment_group: 'Change Management'
         other:
-          work_notes: "{{ vm_info }}"
-        #assignment_group: 'Change Management'
+          planned_start: "{{ lookup('pipe','date +%Y%m%d%H%M%S')}}"
+          answer: true
       register: change_out
 
     - name: Print change results
       ansible.builtin.debug:
         var: change_out
         verbosity: 3
-
-    - name: Mark change request as review
+ 
+    - name: Mark change request as scheduled
       servicenow.itsm.change_request:
         instance:
           host: "{{ SN_HOST }}"
           username: "{{ SN_USERNAME }}"
           password: "{{ SN_PASSWORD }}"
         number: "{{ change_number }}"
-        state: review
+        state: scheduled
         assignment_group: 'Change Management'
+        on_hold: false
       register: change_out
 
     - name: Print change results
