@@ -13,7 +13,7 @@
           password: "{{ SN_PASSWORD }}"
         state: new
         type: emergency
-        requested_by: ansible_workflow
+        requested_by: splunk_ansible_workflow
         short_description: "{{ ticket_short_description }}"
         description: "{{ ticket_long_description }}"
         priority: high
