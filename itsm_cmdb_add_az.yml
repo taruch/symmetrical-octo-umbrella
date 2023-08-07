@@ -1,0 +1,25 @@
+---
+
+- name: Create new CMDB CI
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+
+    - name: Register the newly-created VM instance
+      servicenow.itsm.configuration_item:
+        instance:
+          host: "{{ SN_HOST }}"
+          username: "{{ SN_USERNAME }}"
+          password: "{{ SN_PASSWORD }}"
+        name: "{{ instance.name }}"
+        sys_class_name: cmdb_ci_vm_instance
+        ip_address: "{{ instance.public_ip_address }}"
+        other:
+          vm_inst_id: "{{ instance.id }}"
+      register: cmdb_return
+
+
+    - name: Print out CMDB return information
+      debug:
+        msg: "{{ cmdb_return }}"
