@@ -1,0 +1,34 @@
+{
+ "collection_info": {
+  "namespace": "paloaltonetworks",
+  "name": "panos",
+  "version": "2.16.0",
+  "authors": [
+   "Garfield Lee Freeman"
+  ],
+  "readme": "README.md",
+  "tags": [
+   "networking",
+   "paloaltonetworks",
+   "panw",
+   "security",
+   "panos"
+  ],
+  "description": "Collection for Palo Alto Networks PAN-OS",
+  "license": [],
+  "license_file": "LICENSE",
+  "dependencies": {},
+  "repository": "https://github.com/PaloAltoNetworks/pan-os-ansible",
+  "documentation": "https://paloaltonetworks.github.io/pan-os-ansible/",
+  "homepage": "https://github.com/PaloAltoNetworks/pan-os-ansible",
+  "issues": "https://github.com/PaloAltoNetworks/pan-os-ansible/issues"
+ },
+ "file_manifest_file": {
+  "name": "FILES.json",
+  "ftype": "file",
+  "chksum_type": "sha256",
+  "chksum_sha256": "67711133fcca3b9daa50f719d7fb003781364d32d3788f969b699244c36b7541",
+  "format": 1
+ },
+ "format": 1
+}

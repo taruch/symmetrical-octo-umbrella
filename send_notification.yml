@@ -1,0 +1,15 @@
+---
+
+    - name: notify google chat changelog channel
+      uri:
+        url: "{{ googlechat_room }}"
+        body: "{{ lookup('template', playbook_dir + '/roles/googlechat-notify/templates/card.json.j2') }}"
+        body_format: "json"
+        method: "POST"
+      ignore_errors: yes
+      register: googlechat_result
+      when: not (disable_googlechat_notification | default(false))
+    
+    - set_fact:
+        googlechat_conversation: "{{googlechat_result.json.thread.name}}"
+      ignore_errors: yes

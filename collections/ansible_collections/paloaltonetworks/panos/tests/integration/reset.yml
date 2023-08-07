@@ -1,0 +1,10 @@
+---
+- name: Reset - Load blank config
+  paloaltonetworks.panos.panos_op:
+    provider: '{{ device }}'
+    cmd: '<load><config><from>blank.xml</from></config></load>'
+    cmd_is_xml: true
+
+- name: Reset - Commit
+  paloaltonetworks.panos.panos_commit_firewall:
+    provider: '{{ device }}'

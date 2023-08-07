@@ -1,0 +1,12 @@
+---
+- name: delete podman images
+  hosts: localhost
+  gather_facts: false
+  become: true
+  tasks:
+    - name: delete all podman images
+      containers.podman.podman_image:
+        name: 'registry.access.redhat.com/ubi8/ubi'
+        #name: '*'
+        state: absent
+

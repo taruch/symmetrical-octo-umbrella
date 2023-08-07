@@ -1,0 +1,8 @@
+---
+plugin: servicenow.itsm.now
+group_by:
+  manufacturer:
+  os:
+    includes:
+      - Linux Red Hat
+      - Windows XP

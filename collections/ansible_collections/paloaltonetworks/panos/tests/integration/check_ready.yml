@@ -1,0 +1,22 @@
+---
+- name: Check device is ready
+  hosts: all
+  connection: local
+  gather_facts: false
+
+  vars:
+    device:
+      ip_address: '{{ ip_address }}'
+      username: '{{ username | default(omit) }}'
+      password: '{{ password | default(omit) }}'
+
+  tasks:
+    - name: Check to see if device is ready
+      paloaltonetworks.panos.panos_op:
+        provider: '{{ device }}'
+        cmd: 'show chassis-ready'
+      changed_when: false
+      register: result
+      until: result is not failed and (result.stdout | from_json).response.result == 'yes'
+      retries: 200
+      delay: 6

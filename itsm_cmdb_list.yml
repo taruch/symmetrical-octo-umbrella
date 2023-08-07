@@ -1,0 +1,43 @@
+---
+
+- name: List out all CMDB CIs
+  hosts: localhost
+  gather_facts: false
+  vars:
+    SYS_CLASS_NAME: cmdb_ci_vm_instance
+
+  tasks:
+    - name: Retrieve all configuration items
+      servicenow.itsm.configuration_item_info:
+        instance:
+          host: "{{ SN_HOST }}"
+          username: "{{ SN_USERNAME }}"
+          password: "{{ SN_PASSWORD }}"
+      register: cmdb_list
+      tags:
+        - never
+        - all
+
+    - name: Retrieve all configuration items
+      servicenow.itsm.configuration_item_info:
+        instance:
+          host: "{{ SN_HOST }}"
+          username: "{{ SN_USERNAME }}"
+          password: "{{ SN_PASSWORD }}"
+        sysparm_query: "sys_class_name={{ SYS_CLASS_NAME }}"
+      register: cmdb_list
+      tags:
+        - never
+        - limited
+     
+    - name: Print out CMDB
+      debug:
+        msg: "{{ cmdb_list }}"
+        verbosity: 2
+      tags:
+        - always
+
+    - name: Save CMDB List
+      ansible.builtin.set_stats:
+        data:
+          cmdb_output: "{{ cmdb_list }}"

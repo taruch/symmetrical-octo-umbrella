@@ -1,0 +1,174 @@
+---
+- include_tasks: 'reset.yml'
+
+- name: Create interface
+  paloaltonetworks.panos.panos_interface:
+    provider: '{{ device }}'
+    if_name: 'ethernet1/3'
+    mode: 'layer3'
+    zone_name: 'inside'
+    ip:
+      - '192.168.255.1'
+    ipv6_enabled: true
+    enable_dhcp: false
+
+- name: paloaltonetworks.panos.panos_dhcp_relay - Ipv4 Create
+  paloaltonetworks.panos.panos_dhcp_relay:
+    provider: '{{ device }}'
+    dhcp_interface: 'ethernet1/3'
+    interface: 'ethernet1/3'
+    # name: 'ethernet1/3' - `name` was changed to `interface` in collection v2.10.0
+    ipv4_enabled: true
+    ipv4_servers:
+      - '1.1.1.1'
+      - '2.2.2.2'
+  register: result
+
+- name: paloaltonetworks.panos.panos_dhcp_relay - Assert create was successful
+  assert:
+    that:
+      - result is success
+      - result is changed
+
+- name: paloaltonetworks.panos.panos_dhcp_relay - Ipv4 Create (idempotence)
+  paloaltonetworks.panos.panos_dhcp_relay:
+    provider: '{{ device }}'
+    dhcp_interface: 'ethernet1/3'
+    interface: 'ethernet1/3'
+    # name: 'ethernet1/3' - `name` was changed to `interface` in collection v2.10.0
+    ipv4_enabled: true
+    ipv4_servers:
+      - '1.1.1.1'
+      - '2.2.2.2'
+  register: result
+
+- name: paloaltonetworks.panos.panos_dhcp_relay - Assert create (idempotence) was successful
+  assert:
+    that:
+      - result is success
+      - result is not changed
+
+- name: paloaltonetworks.panos.panos_dhcp_relay_ipv6_address - Ipv6 Create
+  paloaltonetworks.panos.panos_dhcp_relay_ipv6_address:
+    provider: '{{ device }}'
+    dhcp_interface: 'ethernet1/3'
+    dhcp_relay_interface: 'ethernet1/3'
+    interface: 'ethernet1/3'
+    ipv6_address: '2001:0db8:85a3:0000:0000:8a2e:0370:7334'
+  register: result
+
+- name: paloaltonetworks.panos.panos_dhcp_relay_ipv6_address - Assert create was successful
+  assert:
+    that:
+      - result is success
+      - result is changed
+
+- name: paloaltonetworks.panos.panos_dhcp_relay_ipv6_address - Ipv6 Create (idempotence)
+  paloaltonetworks.panos.panos_dhcp_relay_ipv6_address:
+    provider: '{{ device }}'
+    dhcp_interface: 'ethernet1/3'
+    dhcp_relay_interface: 'ethernet1/3'
+    interface: 'ethernet1/3'
+    ipv6_address: '2001:0db8:85a3:0000:0000:8a2e:0370:7334'
+  register: result
+
+- name: paloaltonetworks.panos.panos_dhcp_relay_ipv6_address - Assert create (idempotence) was successful
+  assert:
+    that:
+      - result is success
+      - result is not changed
+
+- name: paloaltonetworks.panos.panos_dhcp_relay - Targetted modify
+  paloaltonetworks.panos.panos_dhcp_relay:
+    provider: '{{ device }}'
+    dhcp_interface: 'ethernet1/3'
+    interface: 'ethernet1/3'
+    # name: 'ethernet1/3' - `name` was changed to `interface` in collection v2.10.0
+    ipv4_servers:
+      - '3.3.3.3'
+    state: 'merged'
+  register: result
+  diff: true
+
+- name: paloaltonetworks.panos.panos_dhcp_relay - Merge check
+  assert:
+    that:
+      - result is success
+      - result is changed
+
+- name: paloaltonetworks.panos.panos_dhcp_relay - Targetted modify (idempotence)
+  paloaltonetworks.panos.panos_dhcp_relay:
+    provider: '{{ device }}'
+    dhcp_interface: 'ethernet1/3'
+    interface: 'ethernet1/3'
+    # name: 'ethernet1/3' - `name` was changed to `interface` in collection v2.10.0
+    ipv4_servers:
+      - '3.3.3.3'
+    state: 'merged'
+  register: result
+  diff: true
+
+- name: paloaltonetworks.panos.panos_dhcp_relay - Merge check (idempotence)
+  assert:
+    that:
+      - result is success
+      - result is not changed
+
+- name: paloaltonetworks.panos.panos_dhcp_relay - Ipv4 Delete
+  paloaltonetworks.panos.panos_dhcp_relay:
+    provider: '{{ device }}'
+    dhcp_interface: 'ethernet1/3'
+    interface: 'ethernet1/3'
+    # name: 'ethernet1/3' - `name` was changed to `interface` in collection v2.10.0
+    state: 'absent'
+  register: result
+
+- name: paloaltonetworks.panos.panos_dhcp_relay - Assert delete was successful
+  assert:
+    that:
+      - result is success
+      - result is changed
+
+- name: paloaltonetworks.panos.panos_dhcp_relay - Ipv4 Delete (idempotence)
+  paloaltonetworks.panos.panos_dhcp_relay:
+    provider: '{{ device }}'
+    dhcp_interface: 'ethernet1/3'
+    interface: 'ethernet1/3'
+    # name: 'ethernet1/3' - `name` was changed to `interface` in collection v2.10.0
+    state: 'absent'
+  register: result
+
+- name: paloaltonetworks.panos.panos_dhcp_relay - Assert delete was successful (idempotence)
+  assert:
+    that:
+      - result is success
+      - result is not changed
+
+- name: paloaltonetworks.panos.panos_dhcp - Delete interface
+  paloaltonetworks.panos.panos_dhcp:
+    provider: '{{ device }}'
+    interface: 'ethernet1/3'
+    state: 'absent'
+  register: result
+
+- name: paloaltonetworks.panos.panos_dhcp - Assert delete was ok
+  assert:
+    that:
+      - result is success
+      - result is changed
+
+- name: Delete test interface
+  paloaltonetworks.panos.panos_interface:
+    provider: '{{ device }}'
+    if_name: 'ethernet1/3'
+    state: 'absent'
+
+- name: paloaltonetworks.panos.panos_dhcp_relay - Make sure changes commit cleanly
+  paloaltonetworks.panos.panos_commit_firewall:
+    provider: '{{ device }}'
+  register: result
+
+- name: paloaltonetworks.panos.panos_dhcp_relay - Assert commit was successful
+  assert:
+    that:
+      - result is success

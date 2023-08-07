@@ -1,0 +1,8 @@
+download_url: https://galaxy.ansible.com/download/servicenow-itsm-2.2.0.tar.gz
+format_version: 1.0.0
+name: itsm
+namespace: servicenow
+server: https://galaxy.ansible.com/api/
+signatures: []
+version: 2.2.0
+version_url: https://galaxy.ansible.com/api/v2/collections/servicenow/itsm/versions/2.2.0/

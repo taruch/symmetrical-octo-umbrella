@@ -1,0 +1,23 @@
+---
+
+- name: Update ServiceNow Service Request ticket
+  hosts: localhost
+  gather_facts: false
+  vars:
+    change_number: 'REQ0010093'
+
+  tasks:
+    - name: Mark change request as implement
+      servicenow.itsm.change_request:
+        instance:
+          host: "{{ SN_HOST }}"
+          username: "{{ SN_USERNAME }}"
+          password: "{{ SN_PASSWORD }}"
+        number: "{{ change_number }}"
+        state: 'closed complete'
+        #assignment_group: 'Change Management'
+      register: change
+
+    #- name: Set fact for change number
+    #  ansible.builtin.set_fact:
+    #    change_number: "{{ change_out.record.number }}"

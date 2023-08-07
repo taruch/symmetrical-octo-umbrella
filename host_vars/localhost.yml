@@ -1,0 +1,9 @@
+---
+SN_HOST: https://ven05430.service-now.com/
+SN_USERNAME: splunk_ansible_workflow
+SN_PASSWORD: 'G9.!<P1=dhs)Y1F?u8w#9$Wl^j]5[AL*wp+_}zs'
+#SN_USERNAME: admin
+#SN_PASSWORD: Ansible!23
+Cab_username: splunk_ansible_cab_approver
+cab_password: 'gW}h*pxGQdfJ{e*8vD4yA3bpZHx&8?w'
+

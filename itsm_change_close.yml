@@ -1,0 +1,27 @@
+---
+
+- name: Close ServiceNow change ticket
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Mark change request as closed
+      servicenow.itsm.change_request:
+        instance:
+          host: "{{ SN_HOST }}"
+          username: "{{ SN_USERNAME }}"
+          password: "{{ SN_PASSWORD }}"
+        number: "{{ change_number }}"
+        state: closed
+        assignment_group: 'Change Management'
+        close_code: successful
+        close_notes: "{{ close_notes  }}"
+      register: change_out
+
+    - name: Set fact for change number
+      ansible.builtin.debug:
+        var: change_out
+        verbosity: 3
+
+ 
+
