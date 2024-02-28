@@ -1,0 +1,26 @@
+- name: Block IP in Palo Firewall
+  hosts: panos-fw
+  connection: local
+  gather_facts: False
+ 
+  collections:
+    - paloaltonetworks.panos
+
+  tasks:
+    - name: Export tech support (module will wait until file is ready)
+      paloaltonetworks.panos.panos_export:
+        provider: '{{ provider }}'
+        category: 'tech-support'
+        filename: '/tmp/tech-support.tgz'
+
+    - name: Get Contents of tech-support tgz
+      ansible.builtin.command:
+        cmd: 'ls -al /tmp/tech-support.tgz'
+    
+    - name: Copy to host
+      ansible.builtin.copy:
+        src: '/tmp/tech-support.tgz'
+        dest: '/tmp/'
+      delegate_to: demo1
+      connection: ssh
+      become: true
