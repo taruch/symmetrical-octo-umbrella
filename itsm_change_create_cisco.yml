@@ -14,7 +14,7 @@
         state: new
         type: emergency
         requested_by: splunk_ansible_workflow
-        short_description: Block IP Workflow
+        short_description: "Cisco Certificate Request"
         description: "Cisco Host Requires Certificate"
         priority: high
         impact: low
