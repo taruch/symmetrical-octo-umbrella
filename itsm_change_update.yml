@@ -5,6 +5,11 @@
   gather_facts: false
 
   tasks:
+
+    - name: Debugging statement
+      ansible.builtin.debug:
+        msg: Running ServiceNow Updates
+
     - name: Mark change request as implement
       tags:
         - implement
