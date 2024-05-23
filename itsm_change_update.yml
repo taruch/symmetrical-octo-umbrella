@@ -5,34 +5,9 @@
   gather_facts: false
 
   tasks:
-    - name: Mark change request as authorize
-      servicenow.itsm.change_request:
-        instance:
-          host: "{{ SN_HOST }}"
-          username: "{{ SN_USERNAME }}"
-          password: "{{ SN_PASSWORD }}"
-        number: "{{ change_number }}"
-        state: authorize
-        on_hold: false
-        assignment_group: 'Change Management'
-        other:
-          planned_start: "{{ lookup('pipe','date +%Y%m%d%H%M%S')}}"
-          answer: true
-      register: change
- 
-    - name: Mark change request as scheduled
-      servicenow.itsm.change_request:
-        instance:
-          host: "{{ SN_HOST }}"
-          username: "{{ SN_USERNAME }}"
-          password: "{{ SN_PASSWORD }}"
-        number: "{{ change_number }}"
-        state: scheduled
-        assignment_group: 'Change Management'
-        on_hold: false
-      register: change
-
     - name: Mark change request as implement
+      tags:
+        - implement
       servicenow.itsm.change_request:
         instance:
           host: "{{ SN_HOST }}"
@@ -40,10 +15,11 @@
           password: "{{ SN_PASSWORD }}"
         number: "{{ change_number }}"
         state: implement
-        #assignment_group: 'Change Management'
       register: change
 
     - name: Mark change request as review
+      tags:
+        - review
       servicenow.itsm.change_request:
         instance:
           host: "{{ SN_HOST }}"
@@ -51,12 +27,18 @@
           password: "{{ SN_PASSWORD }}"
         number: "{{ change_number }}"
         state: review
-        assignment_group: 'Change Management'
       register: change
 
-    #- name: Set fact for change number
-    #  ansible.builtin.set_fact:
-    #    change_number: "{{ change_out.record.number }}"
-
+    - name: Mark change request as Closed
+      tags:
+        closed
+      servicenow.itsm.change_request:
+        instance:
+          host: "{{ SN_HOST }}"
+          username: "{{ SN_USERNAME }}"
+          password: "{{ SN_PASSWORD }}"
+        number: "{{ change_number }}"
+        state: closed
+      register: change
  
 
