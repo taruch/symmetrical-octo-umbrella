@@ -36,7 +36,7 @@
 
     - name: Mark change request as Closed
       tags:
-        closed
+        - closed
       servicenow.itsm.change_request:
         instance:
           host: "{{ SN_HOST }}"
@@ -44,6 +44,8 @@
           password: "{{ SN_PASSWORD }}"
         number: "{{ change_number }}"
         state: closed
+        close_code: "{{ close_code }}"
+        close_notes: "{{ close_notes }}"
       register: change
  
 
