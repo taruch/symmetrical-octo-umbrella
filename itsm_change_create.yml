@@ -14,8 +14,8 @@
         state: new
         type: emergency
         requested_by: splunk_ansible_workflow
-        short_description: Block IP Workflow
-        description: "Splunk AAP workflow blocking IP: {{ block_ip }}"
+        short_description: "the kids"
+        description: "the kids are not all right"
         priority: high
         impact: low
         risk: low
