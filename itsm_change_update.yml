@@ -60,7 +60,7 @@
         number: "{{ change_number }}"
         state: closed
         close_code: "{{ close_code | default('successful') }}"
-        close_notes: "{{ close_notes }}"
+        close_notes: "{{ close_notes | default('Everything was completed') }}"
       register: change
  
 
