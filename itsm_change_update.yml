@@ -10,6 +10,21 @@
       ansible.builtin.debug:
         msg: Running ServiceNow Updates
 
+    - name: Retrieve change requests by number
+      tags:
+        - info
+      servicenow.itsm.change_request_info:
+        instance:
+          host: "{{ SN_HOST }}"
+          username: "{{ SN_USERNAME }}"
+          password: "{{ SN_PASSWORD }}"
+        number: "{{ change_number }}"
+      register: result
+
+    - name: Debug change number
+      debug:
+        msg: "{{ result }}"
+
     - name: Mark change request as implement
       tags:
         - implement
