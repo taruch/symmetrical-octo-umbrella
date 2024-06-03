@@ -1,0 +1,13 @@
+---
+- name: Test set_stats - Phase 1
+  hosts: network
+  become: false
+  gather_facts: false
+
+  tasks:
+    - name: Set change Number
+      ansible.builtin.set_stats:
+        data:
+          change_number: "{{ lookup('community.general.random_string') }}"
+
+...

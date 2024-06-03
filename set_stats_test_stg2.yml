@@ -1,0 +1,12 @@
+---
+- name: Test set_stats - Phase 1
+  hosts: network
+  become: false
+  gather_facts: false
+
+  tasks:
+    - name: Debug set_stats
+      ansible.builtin.debug:
+        msg: "{{ change_number }}"
+
+...
