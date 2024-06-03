@@ -12,7 +12,7 @@
 
     - name: Set change Number
       ansible.builtin.set_stats:
-        per_host: true
+        # per_host: true
         aggregate: false
         data:
           per_host_date: "{{ per_host_data | default({}) | combine({ inventory_hostname: { 'change_state': change_state }}) }}"
