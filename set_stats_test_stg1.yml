@@ -5,10 +5,16 @@
   gather_facts: false
 
   tasks:
+    - name: Set change_number
+      ansible.builtin.set_fact:
+        change_state: "{{ lookup('community.general.random_string', min_numeric=8) }}"
+
+
     - name: Set change Number
       ansible.builtin.set_stats:
         per_host: true
+        aggregate: false
         data:
-          change_number: "{{ lookup('community.general.random_string') }}"
-
+          per_host_date: "{{ per_host_data | default({}) | combine({ inventory_hostname: { 'change_state': change_state }}) }}"
+# "{{ dist_ver_per_host_agg_true | default({}) | combine({ inventory_hostname : { 'ver' : ansible_facts.distribution_version}}) }}"
 ...
