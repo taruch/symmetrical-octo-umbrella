@@ -16,7 +16,7 @@
     - name: Set stats per host
       ansible.builtin.set_stats:
         # per_host: true
-        aggregate: false
+        aggregate: true
         data:
           # per_host_data: "{{ per_host_data | default({}) | combine({ inventory_hostname: { 'change_state': change_state }}) }}"
           per_host_data: "{{ per_host_data | default({}) | combine({inventory_hostname: {'change_state': change_state}}) }}"
