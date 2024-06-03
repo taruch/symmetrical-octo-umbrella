@@ -9,13 +9,18 @@
       ansible.builtin.set_fact:
         change_state: "{{ lookup('community.general.random_string', min_numeric=8) }}"
 
+    - name: Debug change_number
+      ansible.builtin.debug:
+        var: change_state
 
-    - name: Set change Number
+    - name: Set stats per host
       ansible.builtin.set_stats:
-        per_host: true
+        # per_host: true
         aggregate: false
         data:
           # per_host_data: "{{ per_host_data | default({}) | combine({ inventory_hostname: { 'change_state': change_state }}) }}"
-          per_host_data: "{{ per_host_data | default({}) | combine({inventory_hostname: {'change_state': change_state}}) }}"
+          per_host_data: "{{ per_host_data | default({}) | combine({inventory_hostname : {'change_state' : change_state}}) }}"
 # "{{ dist_ver_per_host_agg_true | default({}) | combine({ inventory_hostname : { 'ver' : ansible_facts.distribution_version}}) }}"
+          dist_ver_per_host_agg_true: "{{ dist_ver_per_host_agg_true | default({}) | combine({ inventory_hostname : { 'ver' : ansible_facts.distribution_version}}) }}"
+
 ...
