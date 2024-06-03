@@ -15,7 +15,7 @@
         per_host: true
         aggregate: false
         data:
-          # per_host_date: "{{ per_host_data | default({}) | combine({ inventory_hostname: { 'change_state': change_state }}) }}"
-          per_host_date: "{{ per_host_data | default({}) | combine({inventory_hostname: {'change_state': change_state}}) }}""
+          # per_host_data: "{{ per_host_data | default({}) | combine({ inventory_hostname: { 'change_state': change_state }}) }}"
+          per_host_data: "{{ per_host_data | default({}) | combine({inventory_hostname: {'change_state': change_state}}) }}"
 # "{{ dist_ver_per_host_agg_true | default({}) | combine({ inventory_hostname : { 'ver' : ansible_facts.distribution_version}}) }}"
 ...

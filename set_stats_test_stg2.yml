@@ -7,6 +7,6 @@
   tasks:
     - name: Debug set_stats
       ansible.builtin.debug:
-        msg: "{{ change_number }}"
+        msg: "{{ per_host_data.inventory_hostname.change_state }}"
 
 ...
