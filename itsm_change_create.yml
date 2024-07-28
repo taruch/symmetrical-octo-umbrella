@@ -1,11 +1,12 @@
 ---
 
 - name: Create ServiceNow incident ticket
-  hosts: localhost
+  hosts: cisco
   gather_facts: false
 
   tasks:
     - name: Create Change Request Ticket in ITSM System
+      delegate_to: localhost
       when: change_fact == true
       block:
         - name: Create Change Request
@@ -36,7 +37,6 @@
                 https://gitlab.com/redhatautomation/network_demos/-/blob/main/base_configuration/network_STIG_set.yml?ref_type=heads
               answer: true
           register: change_out
-          delegate_to: localhost
 
 
     - name: Set fact for change number
