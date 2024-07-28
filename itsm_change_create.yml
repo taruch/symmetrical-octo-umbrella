@@ -5,36 +5,71 @@
   gather_facts: false
 
   tasks:
-    - name: Create incident
-      servicenow.itsm.change_request:
-        instance:
-          host: "{{ SN_HOST }}"
-          username: "{{ SN_USERNAME }}"
-          password: "{{ SN_PASSWORD }}"
-        state: new
-        type: emergency
-        requested_by: splunk_ansible_workflow
-        short_description: "the kids"
-        description: "the kids are not all right"
-        priority: high
-        impact: low
-        risk: low
-        category: network
-        other:
-          planned_start: "{{ lookup('pipe','date +%Y%m%d%H%M%S')}}"
-          answer: true
-      register: change_out
-     
+    - name: Create Change Request Ticket in ITSM System
+      when: change_fact == true
+      block:
+        - name: Create Change Request
+          servicenow.itsm.change_request:
+            instance:
+              host: "{{ SN_HOST }}"
+              username: "{{ SN_USERNAME }}"
+              password: "{{ SN_PASSWORD }}"
+            state: new
+            type: normal
+            requested_by: "splunk_ansible_workflow"
+            description: |
+              '{{ inventory_hostname }} is out of compliance.
+              Use the following URL for details: {{ job_url }}'
+            short_description: "{{ inventory_hostname }}"
+            priority: low
+            impact: low
+            risk: low
+            urgency: medium
+            category: network
+            assignment_group: 'Network CAB Managers'
+            other:
+              start_date: "{{ lookup('pipe','date +%Y%m%d%H%M%S')}}"
+              expected_start: "{{ lookup('pipe','date +%Y%m%d%H%M%S')}}"
+              implementation_plan: >
+                Implement the following playbook, which will run the tasks detailed in the second link
+                {{ job_url }}
+                https://gitlab.com/redhatautomation/network_demos/-/blob/main/base_configuration/network_STIG_set.yml?ref_type=heads
+              answer: true
+          register: change_out
+          delegate_to: localhost
+
+
     - name: Set fact for change number
       ansible.builtin.set_fact:
-        #change_number: 'CHG0030022'
         change_number: "{{ change_out.record.number }}"
 
     - name: Debug change number
-      debug:
+      ansible.builtin.debug:
         msg: "{{ change_number }}"
 
     - name: Set change Number
       ansible.builtin.set_stats:
         data:
           change_number: "{{ change_number }}"
+
+
+
+    # - name: Create incident
+    #   servicenow.itsm.change_request:
+    #     instance:
+    #       host: "{{ SN_HOST }}"
+    #       username: "{{ SN_USERNAME }}"
+    #       password: "{{ SN_PASSWORD }}"
+    #     state: new
+    #     type: emergency
+    #     requested_by: ansible_workflow
+    #     short_description: Block IP Workflow
+    #     description: "Splunk AAP workflow blocking IP: {{ block_ip }}"
+    #     priority: high
+    #     impact: low
+    #     risk: low
+    #     category: network
+    #     other:
+    #       planned_start: "{{ lookup('pipe','date +%Y%m%d%H%M%S')}}"
+    #       answer: true
+    #   register: change_out
