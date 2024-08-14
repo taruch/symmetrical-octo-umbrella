@@ -4,8 +4,8 @@
   hosts: localhost
   gather_facts: false
   vars:
-    _start_date: "2024-08-14 15:05:51"
-    _change_number: "CHG0000015"
+    # _start_date: "2024-08-14 15:05:51"
+    # _change_number: "CHG0000015"
     _job_template: "Mark ServiceNow Change Request as Implementing"
   tasks:
 
@@ -19,7 +19,7 @@
         unified_job_template: "{{ _job_template }}"
         rrule: "{{ query('ansible.controller.schedule_rrule', 'none', start_date=_start_date) }}"
         extra_data:
-          - change_number: "{{ _change_number }}"
+          change_number: "{{ _change_number }}"
       register: result
 
     # - name: Build a complex schedule for every day except sunday using the rruleset plugin
