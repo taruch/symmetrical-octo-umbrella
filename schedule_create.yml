@@ -4,8 +4,8 @@
   hosts: localhost
   gather_facts: false
   vars:
-    _start_date: "2024-08-14 18:05:51"
-    _change_number: 
+    _start_date: ""
+    _change_number: ""
     _job_template: "Mark ServiceNow Change Request as Implementing"
   tasks:
 

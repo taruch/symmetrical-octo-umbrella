@@ -38,14 +38,13 @@
               answer: true
           register: change_out
 
+        - name: Set fact for change number
+          ansible.builtin.set_fact:
+            change_number: "{{ change_out.record.number }}"
 
-    - name: Set fact for change number
-      ansible.builtin.set_fact:
-        change_number: "{{ change_out.record.number }}"
-
-    - name: Debug change number
-      ansible.builtin.debug:
-        msg: "{{ change_number }}"
+        - name: Debug change number
+          ansible.builtin.debug:
+            msg: "{{ change_number }}"
 
     - name: Set change Number
       ansible.builtin.set_stats:

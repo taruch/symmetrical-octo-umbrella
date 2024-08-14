@@ -1,0 +1,20 @@
+---
+
+- name: Create ServiceNow incident ticket
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+
+  - name: Retrieve change requests by number
+    servicenow.itsm.change_request_info:
+      instance:
+        host: "{{ SN_HOST }}"
+        username: "{{ SN_USERNAME }}"
+        password: "{{ SN_PASSWORD }}"
+      number: "{{ change_number | default(omit) }}"
+    register: result
+
+  - name: Debug result
+    ansible.builtin.debug:
+      var: result
