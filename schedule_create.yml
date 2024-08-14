@@ -1,0 +1,45 @@
+---
+
+- name: Create ServiceNow incident ticket
+  hosts: localhost
+  gather_facts: false
+  vars:
+    _start_date: "2024-08-14 18:05:51"
+    _change_number: 
+    _job_template: "Mark ServiceNow Change Request as Implementing"
+  tasks:
+
+    - name: Build the same schedule using the rrule plugin
+      tags:
+        - create
+        - never
+      schedule:
+        name: "Schedule for Change Request: {{ _change_number }}"
+        state: present
+        unified_job_template: "{{ _job_template }}"
+        rrule: "{{ query('awx.awx.schedule_rrule', 'none', start_date=_start_date) }}"
+      register: result
+
+    # - name: Build a complex schedule for every day except sunday using the rruleset plugin
+    #   schedule:
+    #     name: "{{ sched1 }}"
+    #     state: present
+    #     unified_job_template: "Demo Job Template"
+    #     rrule: "{{ query(awx.awx.schedule_rruleset, '2022-04-30 10:30:45', rules=rrules, timezone='UTC' ) }}"
+    #   vars:
+    #     rrules:
+    #       - frequency: 'day'
+    #         every: 1
+    #       - frequency: 'day'
+    #         every: 1
+    #         on_days: 'sunday'
+    #         include: False
+
+    - name: Delete 'my_schedule' schedule for my_workflow
+      tags:
+        - delete
+        - never
+      schedule:
+        name: "Schedule for Change Request: {{ _change_number }}"
+        state: absent
+        unified_job_template: "{{ _job_template }}"
