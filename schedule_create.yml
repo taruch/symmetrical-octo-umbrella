@@ -17,7 +17,7 @@
         name: "Schedule for Change Request: {{ _change_number }}"
         state: present
         unified_job_template: "{{ _job_template }}"
-        rrule: "{{ query('awx.awx.schedule_rrule', 'none', start_date=_start_date) }}"
+        rrule: "{{ query('ansible.controller.schedule_rrule', 'none', start_date=_start_date) }}"
         extra_data:
           - change_number: "{{ _change_number }}"
       register: result
