@@ -13,7 +13,7 @@
       tags:
         - create
         - never
-      schedule:
+      ansible.controller.schedule:
         name: "Schedule for Change Request: {{ _change_number }}"
         state: present
         unified_job_template: "{{ _job_template }}"
@@ -41,7 +41,7 @@
       tags:
         - delete
         - never
-      schedule:
+      ansible.controller.schedule:
         name: "Schedule for Change Request: {{ _change_number }}"
         state: absent
         unified_job_template: "{{ _job_template }}"
