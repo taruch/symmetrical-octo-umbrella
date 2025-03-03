@@ -14,7 +14,7 @@
         caller: ansible_workflow
         short_description: "Service Availability issue: {{ problem_id | default('Problem ID') }}"
         description: >
-          "{{ ansible_eda.event.payload.eventData | default('Oh yeah we gotta problem') }}"
+          "{{ ansible_eda.event.payload.eventData | to_nice_json }}"
         impact: med
         urgency: med
         other:
