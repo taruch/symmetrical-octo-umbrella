@@ -10,11 +10,11 @@
           host: "{{ SN_HOST }}"
           username: "{{ SN_USERNAME }}"
           password: "{{ SN_PASSWORD }}"
-        state: new
+        state: "{{ incident_state }}"
         caller: ansible_workflow
         short_description: "Service Availability issue: {{ problem_id | default('Problem ID') }}"
         description: >
-          "{{ ansible_eda.event.payload.eventData['event.description'] | default('Oh yeah we gotta problem') }}"
+          "{{ ansible_eda.event.payload.eventData | default('Oh yeah we gotta problem') }}"
         impact: med
         urgency: med
         other:
