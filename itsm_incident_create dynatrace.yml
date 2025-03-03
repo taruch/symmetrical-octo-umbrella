@@ -21,17 +21,17 @@
           expected_start: "{{ lookup('pipe','date +%Y%m%d%H%M%S')}}"
       register: incident_out
 
-- name: Close incident
-  when: incident_state == 'closed'
-  servicenow.itsm.incident:
-    instance:
-      host: "{{ SN_HOST }}"
-      username: "{{ SN_USERNAME }}"
-      password: "{{ SN_PASSWORD }}"
-    state: closed
-    number: "{{ incident_out.record.number }}"
-    close_code: "Solved (Permanently)"
-    close_notes: "Ansible workflow resolved incident and Dyntrace marked problem as closed"
+    - name: Close incident
+      when: incident_state == 'closed'
+      servicenow.itsm.incident:
+        instance:
+          host: "{{ SN_HOST }}"
+          username: "{{ SN_USERNAME }}"
+          password: "{{ SN_PASSWORD }}"
+        state: closed
+        number: "{{ incident_out.record.number }}"
+        close_code: "Solved (Permanently)"
+        close_notes: "Ansible workflow resolved incident and Dyntrace marked problem as closed"
 
     - name: Set Incident Number
       ansible.builtin.set_stats:
