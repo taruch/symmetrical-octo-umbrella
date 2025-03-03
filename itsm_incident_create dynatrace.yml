@@ -12,9 +12,9 @@
           password: "{{ SN_PASSWORD }}"
         state: new
         caller: splunk_ansible_workflow
-        short_description: Service Availability issue: {{ problem_id }}
+        short_description: Service Availability issue: {{ problem_id | default('Problem ID' }}
         description: >
-          {{ ansible_eda.event.payload.eventData['event.description'] }}
+          {{ ansible_eda.event.payload.eventData['event.description'] | default('Oh yeah we gotta problem" }}
         impact: med
         urgency: med
         other:
