@@ -7,7 +7,6 @@
   tasks:
     - name: Create Change Request Ticket in ITSM System
       delegate_to: localhost
-      when: change_fact == true
       block:
         - name: Create Change Request
           servicenow.itsm.change_request:
