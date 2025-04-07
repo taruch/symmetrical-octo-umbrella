@@ -15,6 +15,7 @@
         msg: "ServiceNow credentials are not set. Please set SN_HOST, SN_USERNAME, and SN_PASSWORD."
 
     - name: Use the URI module to connect to login to the ansible automation platform and get events
+      delegate_to: localhost
       ansible.builtin.uri:
         url: "{{ _url_ }}"
         method: GET
