@@ -9,6 +9,7 @@
     _url_: "{{ _controller_host_ }}/api/controller/v2/jobs/{{ job_id }}/job_events/?search=new_rhel8&changed=true"
     _user_: "{{ lookup('ansible.builtin.env', 'CONTROLLER_USERNAME', default=undef()) }}"
     _password_: "{{ lookup('ansible.builtin.env', 'CONTROLLER_PASSWORD', default=undef()) }}"
+    _url2_: 'https://aap-aap.apps.cluster-dnplz-1.dynamic.redhatworkshops.io/api/controller/v2/jobs/112/stdout/?search=new_rhel8&changed=true&format=html'
 
   tasks:
     - name: Check if ServiceNow credentials are set
@@ -16,10 +17,23 @@
       ansible.builtin.fail:
         msg: "ServiceNow credentials are not set. Please set SN_HOST, SN_USERNAME, and SN_PASSWORD."
 
+    # - name: Use the URI module to connect to login to the ansible automation platform and get events
+    #   delegate_to: localhost
+    #   ansible.builtin.uri:
+    #     url: "{{ _url_ }}"
+    #     method: GET
+    #     user: "{{ _user_ }}"
+    #     password: "{{ _password_ }}"
+    #     force_basic_auth: true
+    #     return_content: true
+    #     validate_certs: false
+    #   register: events_api_out
+    #   failed_when: events_api_out.status != 200
+
     - name: Use the URI module to connect to login to the ansible automation platform and get events
       delegate_to: localhost
       ansible.builtin.uri:
-        url: "{{ _url_ }}"
+        url: "{{ _url2_ }}"
         method: GET
         user: "{{ _user_ }}"
         password: "{{ _password_ }}"
