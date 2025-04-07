@@ -16,7 +16,7 @@
       ansible.builtin.fail:
         msg: "ServiceNow credentials are not set. Please set SN_HOST, SN_USERNAME, and SN_PASSWORD."
 
-    - name: Use the URI module to connect to login to the ansible automation platform and get events
+    - name: Use the URI module to connect to the ansible automation platform and get events
       delegate_to: localhost
       ansible.builtin.uri:
         url: "{{ _url_ }}"
@@ -31,7 +31,7 @@
 
     - name: Debug events API output
       ansible.builtin.debug:
-        msg: "{{ events_api_out.content | to_nice_yaml }}"
+        msg: "{{ events_api_out.json }}"
 
     - name: Create Change Request Ticket in ITSM System
       delegate_to: localhost
@@ -48,7 +48,7 @@
             short_description: '{{ inventory_hostname }} is out of compliance.'
             description: |
              'Use the following URL for details: {{ job_url }}'
-             '{{ events_api_out.content | to_nice_yaml }}'
+             '{{ events_api_out.json }}'
             priority: low
             impact: low
             risk: low
