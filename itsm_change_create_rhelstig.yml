@@ -48,7 +48,7 @@
             short_description: '{{ inventory_hostname }} is out of compliance.'
             description: |
              'Use the following URL for details: {{ job_url }}'
-             '{{ events_api_out | to_nice_json }}'
+             '{{ events_api_out.content | to_nice_yaml }}'
             priority: low
             impact: low
             risk: low
