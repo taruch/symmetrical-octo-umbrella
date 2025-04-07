@@ -17,7 +17,7 @@
               password: "{{ SN_PASSWORD }}"
             state: new
             type: normal
-            requested_by: "splunk_ansible_workflow"
+            requested_by: "admin"
             description: |
               '{{ inventory_hostname }} is out of compliance.
               Use the following URL for details: {{ job_url }}'
