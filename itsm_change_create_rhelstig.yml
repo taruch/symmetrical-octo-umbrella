@@ -69,24 +69,4 @@
         data:
           change_number: "{{ change_number }}"
 
-
-
-    # - name: Create incident
-    #   servicenow.itsm.change_request:
-    #     instance:
-    #       host: "{{ SN_HOST }}"
-    #       username: "{{ SN_USERNAME }}"
-    #       password: "{{ SN_PASSWORD }}"
-    #     state: new
-    #     type: emergency
-    #     requested_by: ansible_workflow
-    #     short_description: Block IP Workflow
-    #     description: "Splunk AAP workflow blocking IP: {{ block_ip }}"
-    #     priority: high
-    #     impact: low
-    #     risk: low
-    #     category: network
-    #     other:
-    #       planned_start: "{{ lookup('pipe','date +%Y%m%d%H%M%S')}}"
-    #       answer: true
-    #   register: change_out
+...
