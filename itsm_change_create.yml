@@ -17,10 +17,9 @@
             state: new
             type: normal
             requested_by: "admin"
+            short_description: '{{ inventory_hostname }} is out of compliance.
             description: |
-              '{{ inventory_hostname }} is out of compliance.
               Use the following URL for details: {{ job_url }}'
-            short_description: "{{ inventory_hostname }}"
             priority: low
             impact: low
             risk: low
