@@ -31,7 +31,7 @@
 
     - name: Debug events API output
       ansible.builtin.debug:
-        msg: "{{ events_api_out | to_nice_yaml }}"
+        msg: "{{ events_api_out.content | to_nice_yaml }}"
 
     - name: Create Change Request Ticket in ITSM System
       delegate_to: localhost
