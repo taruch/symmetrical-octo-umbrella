@@ -1,0 +1,92 @@
+---
+
+- name: Create ServiceNow incident ticket
+  hosts: "{{ _hosts | default(omit) }}"
+  gather_facts: false
+  vars:
+    _url_: "{{ lookup('ansible.builtin.env', 'CONTROLLER_HOST', default=undef()) }}/api/controller/v2/jobs/144/job_events/?search=new_rhel8&changed=true"
+    _user_: "{{ lookup('ansible.builtin.env', 'CONTROLLER_USER', default=undef()) }}"
+    _password_: "{{ lookup('ansible.builtin.env', 'CONTROLLER_PASSWORD', default=undef()) }}"
+
+  tasks:
+    - name: Check if ServiceNow credentials are set
+      when: SN_HOST is not defined or SN_USERNAME is not defined or SN_PASSWORD is not defined
+      ansible.builtin.fail:
+        msg: "ServiceNow credentials are not set. Please set SN_HOST, SN_USERNAME, and SN_PASSWORD."
+
+    - name: Use the URI module to connect to login to the ansible automation platform and get events
+      ansible.builtin.uri:
+        url: "{{ _url_ }}"
+        method: GET
+        user: "{{ _user_ }}"
+        password: "{{ _password_ }}"
+        return_content: true
+        validate_certs: false
+      register: events_api_out
+      failed_when: events_api_out.status != 200
+
+    - name: Create Change Request Ticket in ITSM System
+      delegate_to: localhost
+      block:
+        - name: Create Change Request
+          servicenow.itsm.change_request:
+            instance:
+              host: "{{ SN_HOST }}"
+              username: "{{ SN_USERNAME }}"
+              password: "{{ SN_PASSWORD }}"
+            state: new
+            type: normal
+            requested_by: "admin"
+            short_description: '{{ inventory_hostname }} is out of compliance.'
+            description: |
+             'Use the following URL for details: {{ job_url }}'
+             '{{ events_api_out | to_nice_json }}'
+            priority: low
+            impact: low
+            risk: low
+            urgency: medium
+            category: software
+            assignment_group: 'Change Managers'
+            other:
+              start_date: "{{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}"
+              expected_start: "{{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}"
+              implementation_plan: >
+                Implement the following playbook, which will run the tasks detailed in the link
+                {{ job_url }}
+              answer: true
+          register: change_out
+
+        - name: Set fact for change number
+          ansible.builtin.set_fact:
+            change_number: "{{ change_out.record.number }}"
+
+        - name: Debug change number
+          ansible.builtin.debug:
+            msg: "{{ change_number }}"
+
+    - name: Set change Number
+      ansible.builtin.set_stats:
+        data:
+          change_number: "{{ change_number }}"
+
+
+
+    # - name: Create incident
+    #   servicenow.itsm.change_request:
+    #     instance:
+    #       host: "{{ SN_HOST }}"
+    #       username: "{{ SN_USERNAME }}"
+    #       password: "{{ SN_PASSWORD }}"
+    #     state: new
+    #     type: emergency
+    #     requested_by: ansible_workflow
+    #     short_description: Block IP Workflow
+    #     description: "Splunk AAP workflow blocking IP: {{ block_ip }}"
+    #     priority: high
+    #     impact: low
+    #     risk: low
+    #     category: network
+    #     other:
+    #       planned_start: "{{ lookup('pipe','date +%Y%m%d%H%M%S')}}"
+    #       answer: true
+    #   register: change_out
