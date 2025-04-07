@@ -5,7 +5,7 @@
   gather_facts: false
   vars:
     _url_: "{{ lookup('ansible.builtin.env', 'CONTROLLER_HOST', default=undef()) }}/api/controller/v2/jobs/144/job_events/?search=new_rhel8&changed=true"
-    _user_: "{{ lookup('ansible.builtin.env', 'CONTROLLER_USER', default=undef()) }}"
+    _user_: "{{ lookup('ansible.builtin.env', 'CONTROLLER_USERNAME', default=undef()) }}"
     _password_: "{{ lookup('ansible.builtin.env', 'CONTROLLER_PASSWORD', default=undef()) }}"
 
   tasks:
