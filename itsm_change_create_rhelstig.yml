@@ -29,6 +29,10 @@
       register: events_api_out
       failed_when: events_api_out.status != 200
 
+    - name: Debug events API output
+      ansible.builtin.debug:
+        msg: "{{ events_api_out | to_nice_json }}"
+
     - name: Create Change Request Ticket in ITSM System
       delegate_to: localhost
       block:
@@ -50,7 +54,7 @@
             risk: low
             urgency: medium
             category: software
-            assignment_group: 'Change Managers'
+            # assignment_group: 'Change Managers'
             other:
               start_date: "{{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}"
               expected_start: "{{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}"
