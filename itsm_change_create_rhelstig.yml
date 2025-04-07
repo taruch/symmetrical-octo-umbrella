@@ -4,7 +4,9 @@
   hosts: "{{ _hosts | default(omit) }}"
   gather_facts: false
   vars:
-    _url_: "{{ lookup('ansible.builtin.env', 'CONTROLLER_HOST', default=undef()) }}/api/controller/v2/jobs/144/job_events/?search=new_rhel8&changed=true"
+    job_id: '147'
+    _controller_host_: "{{ lookup('ansible.builtin.env', 'CONTROLLER_HOST', default=undef()) }}"
+    _url_: "{{ _controller_host_ }}/api/controller/v2/jobs/{{ job_id }}/job_events/?search=new_rhel8&changed=true"
     _user_: "{{ lookup('ansible.builtin.env', 'CONTROLLER_USERNAME', default=undef()) }}"
     _password_: "{{ lookup('ansible.builtin.env', 'CONTROLLER_PASSWORD', default=undef()) }}"
 
