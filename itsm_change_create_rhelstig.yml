@@ -45,11 +45,12 @@
             state: new
             type: normal
             requested_by: "admin"
-            short_description: '{{ inventory_hostname }} is out of compliance.'
+            short_description: '{{ inventory_hostname }}'
             description: |
-             'Use the following URL for details: {{ job_url }}'
-              ---------------------------------------
-             '{{ events_api_out.json | to_nice_json }}'
+              '{{ inventory_hostname }} is out of compliance.'
+              'Use the following URL for details: {{ job_url }}'
+              ---------------------------------------------------
+              '{{ events_api_out.json | to_nice_json }}'
             priority: low
             impact: low
             risk: low
