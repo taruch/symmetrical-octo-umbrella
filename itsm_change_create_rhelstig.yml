@@ -4,17 +4,17 @@
   hosts: "{{ _hosts | default(omit) }}"
   gather_facts: false
   vars:
-    # job_id: '147'
+    job_id: '276'
     _controller_host_: "{{ lookup('ansible.builtin.env', 'CONTROLLER_HOST', default=undef()) }}"
-    _url_: "{{ _controller_host_ }}/api/controller/v2/jobs/{{ job_id }}/job_events/?search=new_rhel8&changed=true"
+    _url_: "{{ _controller_host_ }}/api/controller/v2/jobs/{{ job_id }}/job_events/?search={{ inventory_hostname }}&changed=true"
     _user_: "{{ lookup('ansible.builtin.env', 'CONTROLLER_USERNAME', default=undef()) }}"
     _password_: "{{ lookup('ansible.builtin.env', 'CONTROLLER_PASSWORD', default=undef()) }}"
 
   tasks:
-    - name: Check if ServiceNow credentials are set
-      when: SN_HOST is not defined or SN_USERNAME is not defined or SN_PASSWORD is not defined
-      ansible.builtin.fail:
-        msg: "ServiceNow credentials are not set. Please set SN_HOST, SN_USERNAME, and SN_PASSWORD."
+    # - name: Check if ServiceNow credentials are set
+    #   when: SN_HOST is not defined or SN_USERNAME is not defined or SN_PASSWORD is not defined
+    #   ansible.builtin.fail:
+    #     msg: "ServiceNow credentials are not set. Please set SN_HOST, SN_USERNAME, and SN_PASSWORD."
 
     - name: Use the URI module to connect to the ansible automation platform and get events
       delegate_to: localhost
@@ -31,7 +31,20 @@
 
     - name: Debug events API output
       ansible.builtin.debug:
-        msg: "{{ events_api_out.json }}"
+        msg: "{{ events_api_out.json.results }}"
+        verbosity: 2
+      when: events_api_out.json.results is defined
+
+    - name: Set VAR from events API output
+      when: item.event_data.res is defined
+      loop: "{{ events_api_out.json.results }}"
+      ansible.builtin.set_fact:
+        resolution: "{{ resolution | default([]) + [item.event_data.res] }}"
+
+    - name: Debug events API output
+      ansible.builtin.debug:
+        msg: "{{ resolution }}"
+        verbosity: 2
 
     - name: Create Change Request Ticket in ITSM System
       delegate_to: localhost
@@ -50,7 +63,10 @@
               '{{ inventory_hostname }} is out of compliance.'
               'Use the following URL for details: {{ job_url }}'
               ---------------------------------------------------
-              '{{ events_api_out.json | to_nice_json }}'
+              'You will find a list of the changes to be made to the system to bring it into compliance.'
+              'Please review the changes and approve them.'
+
+              '{{ resolution | to_nice_json }}'
             priority: low
             impact: low
             risk: low

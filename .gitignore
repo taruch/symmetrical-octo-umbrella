@@ -1,2 +1,3 @@
 *.log
 *-artifact-*.json
+collections/ansible_collections
