@@ -1,0 +1,4 @@
+[myhosts]
+aws_rhel8 ansible_host=ec2-18-116-38-140.us-east-2.compute.amazonaws.com ansible_user=ec2-user
+ftw_rhel8 ansible_host=ec2-3-15-142-49.us-east-2.compute.amazonaws.com ansible_user=ec2-user
+new_rhel8 ansible_host=ec2-3-137-200-130.us-east-2.compute.amazonaws.com ansible_user=ec2-user
