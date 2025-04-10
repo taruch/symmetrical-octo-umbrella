@@ -11,10 +11,15 @@
     _password_: "{{ lookup('ansible.builtin.env', 'CONTROLLER_PASSWORD', default=undef()) }}"
 
   tasks:
-    # - name: Check if ServiceNow credentials are set
-    #   when: SN_HOST is not defined or SN_USERNAME is not defined or SN_PASSWORD is not defined
-    #   ansible.builtin.fail:
-    #     msg: "ServiceNow credentials are not set. Please set SN_HOST, SN_USERNAME, and SN_PASSWORD."
+    - name: Check if ServiceNow credentials are set
+      when: SN_HOST is not defined or SN_USERNAME is not defined or SN_PASSWORD is not defined
+      ansible.builtin.fail:
+        msg: "ServiceNow credentials are not set. Please set SN_HOST, SN_USERNAME, and SN_PASSWORD."
+
+    - name: Check if AAP credentials are set
+      when: _controller_host_ is not defined or _user_ is not defined or _password_ is not defined
+      ansible.builtin.fail:
+        msg: "Ansible Automation Platform credentials are not set. Please set CONTROLLER_HOST, CONTROLLER_USERNAME, and CONTROLLER_PASSWORD."
 
     - name: Use the URI module to connect to the ansible automation platform and get events
       delegate_to: localhost
@@ -30,10 +35,10 @@
       failed_when: events_api_out.status != 200
 
     - name: Debug events API output
+      when: events_api_out.json.results is defined
       ansible.builtin.debug:
         msg: "{{ events_api_out.json.results }}"
         verbosity: 2
-      when: events_api_out.json.results is defined
 
     - name: Set VAR from events API output
       when: item.event_data.res is defined
@@ -63,7 +68,7 @@
               '{{ inventory_hostname }} is out of compliance.'
               'Use the following URL for details: {{ job_url }}'
               ---------------------------------------------------
-              'You will find a list of the changes to be made to the system to bring it into compliance.'
+              'In the section below you will find a list of the changes to be made to the system to bring it into compliance.'
               'Please review the changes and approve them.'
 
               '{{ resolution | to_nice_json }}'
@@ -71,7 +76,7 @@
             impact: low
             risk: low
             urgency: medium
-            category: software
+            category: Software
             assignment_group: 'Change Management'
             other:
               start_date: "{{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}"
