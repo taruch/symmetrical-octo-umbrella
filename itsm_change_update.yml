@@ -22,8 +22,10 @@
       register: result
 
     - name: Debug change number
-      debug:
+      ansible.builtin.debug:
         msg: "{{ result }}"
+        verbosity: 2
+      when: result is defined
 
     - name: Mark change request as implement
       tags:
@@ -62,7 +64,6 @@
         close_code: "{{ close_code | default('successful') }}"
         close_notes: "{{ close_notes | default('Everything was completed') }}"
       register: change
- 
 
     - name: Find a ServiceNow Record
       tags:
@@ -71,10 +72,6 @@
         table: sc_request
         query:
           number: "{{ change_number }}"
-          # assignment_group: d625dccec0a8016700a222a0f7900d06
-        # return_fields:
-        #   - number
-        #   - opened_at`
       register: Record
 
     - name: Debugging statement
@@ -92,3 +89,5 @@
         number: "{{ change_number }}"  # Replace with the actual request ID
         request_state: "Closed Complete"  # Or the appropriate closed state value
         state: present
+
+...
