@@ -1,18 +1,22 @@
 ---
 
-- name: Create ServiceNow incident ticket
+- name: Update ServiceNow record
   hosts: localhost
   gather_facts: false
 
   tasks:
 
     - name: Debugging statement
+      tags:
+        - debug
+        - never
       ansible.builtin.debug:
         msg: Running ServiceNow Updates
 
     - name: Retrieve change requests by number
       tags:
         - info
+        - never
       servicenow.itsm.change_request_info:
         instance:
           host: "{{ SN_HOST }}"
@@ -22,6 +26,9 @@
       register: result
 
     - name: Debug change number
+      tags:
+        - debug
+        - never
       ansible.builtin.debug:
         msg: "{{ result }}"
         verbosity: 2
@@ -30,6 +37,7 @@
     - name: Mark change request as implement
       tags:
         - implement
+        - never
       servicenow.itsm.change_request:
         instance:
           host: "{{ SN_HOST }}"
@@ -42,6 +50,7 @@
     - name: Mark change request as review
       tags:
         - review
+        - never
       servicenow.itsm.change_request:
         instance:
           host: "{{ SN_HOST }}"
@@ -54,6 +63,7 @@
     - name: Mark change request as Closed
       tags:
         - closed
+        - never
       servicenow.itsm.change_request:
         instance:
           host: "{{ SN_HOST }}"
@@ -68,6 +78,7 @@
     # - name: Find a ServiceNow Record
     #   tags:
     #     - find_record
+    #     - never
     #   servicenow.servicenow.snow_record_find:
     #     table: sc_request
     #     query:
@@ -84,10 +95,12 @@
     - name: Close ServiceNow Request
       tags:
         - close_request
+        - never
       servicenow.servicenow.snow_record:
         table: sc_request
         number: "{{ change_number }}"  # Replace with the actual request ID
-        request_state: "Closed Complete"  # Or the appropriate closed state value
+        data:
+          request_state: "Closed Complete"  # Or the appropriate closed state value
         state: present
 
 ...
