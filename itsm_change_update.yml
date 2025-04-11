@@ -1,5 +1,4 @@
 ---
-
 - name: Update ServiceNow record
   hosts: localhost
   gather_facts: false
@@ -75,22 +74,22 @@
         close_notes: "{{ close_notes | default('Everything was completed') }}"
       register: change
 
-    # - name: Find a ServiceNow Record
-    #   tags:
-    #     - find_record
-    #     - never
-    #   servicenow.servicenow.snow_record_find:
-    #     table: sc_request
-    #     query:
-    #       number: "{{ change_number }}"
-    #   register: Record
+    - name: Find a ServiceNow Record
+      tags:
+        - find_record
+        - never
+      servicenow.servicenow.snow_record_find:
+        table: sc_request
+        query:
+          number: "{{ change_number }}"
+      register: Record
 
-    # - name: Debugging statement
-    #   tags:
-    #     - find_record
-    #   ansible.builtin.debug:
-    #     msg: "{{ Record }}"
-    #   when: Record is defined
+    - name: Debugging statement
+      tags:
+        - find_record
+      ansible.builtin.debug:
+        msg: "{{ Record }}"
+      when: Record is defined
 
     - name: Close ServiceNow Request
       tags:

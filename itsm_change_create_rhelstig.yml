@@ -34,12 +34,6 @@
       register: events_api_out
       failed_when: events_api_out.status != 200
 
-    - name: Debug events API output
-      when: events_api_out.json.results is defined
-      ansible.builtin.debug:
-        msg: "{{ events_api_out.json.results }}"
-        verbosity: 2
-
     - name: Set VAR from events API output
       when: item.event_data.res is defined
       loop: "{{ events_api_out.json.results }}"
@@ -47,9 +41,10 @@
         resolution: "{{ resolution | default([]) + [item.event_data.res] }}"
 
     - name: Debug events API output
-      ansible.builtin.debug:
-        msg: "{{ resolution }}"
-        verbosity: 2
+      loop: "{{ resolution }}"
+      when: item.diff is defined
+      ansible.builtin.set_fact:
+        diffs: "{{ diffs | default([]) + [item.diff] }}"
 
     - name: Create Change Request Ticket in ITSM System
       delegate_to: localhost
@@ -71,7 +66,7 @@
               'In the section below you will find a list of the changes to be made to the system to bring it into compliance.'
               'Please review the changes and approve them.'
 
-              '{{ resolution | to_nice_json }}'
+              '{{ diffs | to_nice_json }}'
             priority: low
             impact: low
             risk: low
