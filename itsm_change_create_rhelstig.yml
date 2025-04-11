@@ -48,7 +48,6 @@
         diffs: "{{ diffs | default([]) + [item.diff] }}"
 
     - name: Derive the URL for the validate job template for the service now change ticket
-      when: STIG_job
       ansible.builtin.set_fact:
         job_url: "{{ _controller_host_ }}/execution/jobs/playbook/{{ job_id }}/output"
       check_mode: false
