@@ -6,7 +6,6 @@
   vars:
     #job_id: '276'
     job_id: "{{ _job_id[0] }}"
-    job_url: "{{ _job_url[0] }}"
     _controller_host_: "{{ lookup('ansible.builtin.env', 'CONTROLLER_HOST', default=undef()) }}"
     _url_: "{{ _controller_host_ }}/api/controller/v2/jobs/{{ job_id }}/job_events/?search={{ inventory_hostname }}&changed=true"
     _user_: "{{ lookup('ansible.builtin.env', 'CONTROLLER_USERNAME', default=undef()) }}"
@@ -47,6 +46,14 @@
       when: item.diff is defined
       ansible.builtin.set_fact:
         diffs: "{{ diffs | default([]) + [item.diff] }}"
+
+    - name: Derive the URL for the validate job template for the service now change ticket
+      when: STIG_job
+      ansible.builtin.set_fact:
+        job_url: "{{ _controller_host_ }}/execution/jobs/playbook/{{ job_id }}/output"
+      check_mode: false
+      run_once: true
+      delegate_to: localhost
 
     - name: Create Change Request Ticket in ITSM System
       delegate_to: localhost
