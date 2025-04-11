@@ -4,7 +4,9 @@
   hosts: "{{ _hosts | default(omit) }}"
   gather_facts: false
   vars:
-    job_id: '276'
+    #job_id: '276'
+    job_id: "{{ _job_id[0] }}"
+    job_url: "{{ _job_url[0] }}"
     _controller_host_: "{{ lookup('ansible.builtin.env', 'CONTROLLER_HOST', default=undef()) }}"
     _url_: "{{ _controller_host_ }}/api/controller/v2/jobs/{{ job_id }}/job_events/?search={{ inventory_hostname }}&changed=true"
     _user_: "{{ lookup('ansible.builtin.env', 'CONTROLLER_USERNAME', default=undef()) }}"
