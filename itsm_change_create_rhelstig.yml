@@ -12,6 +12,14 @@
     _password_: "{{ lookup('ansible.builtin.env', 'CONTROLLER_PASSWORD', default=undef()) }}"
 
   tasks:
+    - name: Debug
+      ansible.builtin.debug:
+        msg: >
+          The job id is {{ job_id }}
+          Controller_host {{ _controller_host_ }}
+          _url_ is {{ _url_ }}
+          _user_ is {{ _user_ }} and _password_ is {{ _password_ }}
+
     - name: Check if ServiceNow credentials are set
       when: SN_HOST is not defined or SN_USERNAME is not defined or SN_PASSWORD is not defined
       ansible.builtin.fail:
