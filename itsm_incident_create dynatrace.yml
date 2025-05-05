@@ -5,13 +5,15 @@
 
   tasks:
     - name: Create incident
+      tags:
+        - create_incident
       servicenow.itsm.incident:
         instance:
           host: "{{ SN_HOST }}"
           username: "{{ SN_USERNAME }}"
           password: "{{ SN_PASSWORD }}"
         state: new
-        caller: ansible_workflow
+        caller: truch
         short_description: "Service Availability issue: {{ problem_id | default('Problem ID') }}"
         description: >
           "{{ ansible_eda.event.payload.eventData | to_nice_json }}"
