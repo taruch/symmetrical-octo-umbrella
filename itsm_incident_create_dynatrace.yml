@@ -10,8 +10,9 @@
       servicenow.itsm.incident:
         instance:
           host: "{{ SN_HOST }}"
-          username: "{{ SN_USERNAME }}"
-          password: "{{ SN_PASSWORD }}"
+          api_key: "{{ SN_API_KEY | default(omit) }}"
+          username: "{{ SN_USERNAME | default(omit) }}"
+          password: "{{ SN_PASSWORD | default(omit) }}"
         state: new
         caller: truch
         short_description: "Service Availability issue: {{ problem_id | default('Problem ID') }}"
@@ -28,8 +29,9 @@
       servicenow.itsm.incident:
         instance:
           host: "{{ SN_HOST }}"
-          username: "{{ SN_USERNAME }}"
-          password: "{{ SN_PASSWORD }}"
+          api_key: "{{ SN_API_KEY | default(omit) }}"
+          username: "{{ SN_USERNAME | default(omit) }}"
+          password: "{{ SN_PASSWORD | default(omit) }}"
         state: closed
         number: "{{ incident_out.record.number }}"
         close_code: "Solved (Permanently)"
