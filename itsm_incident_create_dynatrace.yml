@@ -9,15 +9,17 @@
         - create_incident
       servicenow.itsm.incident:
         instance:
-          host: "{{ SN_HOST }}"
-          api_key: "{{ SN_API_KEY | default(omit) }}"
-          username: "{{ SN_USERNAME | default(omit) }}"
-          password: "{{ SN_PASSWORD | default(omit) }}"
+          host: "{{ lookup('env','SN_HOST') | default(omit) }}"
+          # api_key: "{{ lookup('env','SN_API_KEY') | default(omit) }}"
+          username: "{{ lookup('env','SN_USERNAME') | default(omit) }}"
+          password: "{{ lookup('env','SN_PASSWORD') | default(omit) }}"
         state: new
         caller: truch
         short_description: "Service Availability issue: {{ problem_id | default('Problem ID') }}"
         description: >
-          "{{ ansible_eda.event.payload.eventData | to_nice_json }}"
+          "Just some rando data here, not sure what to put in here, but it should be something useful."
+
+        # "{{ ansible_eda.event.payload.eventData | to_nice_json | default('No event data provided') }}"
         impact: med
         urgency: med
         other:
@@ -28,10 +30,10 @@
       when: incident_state == 'closed'
       servicenow.itsm.incident:
         instance:
-          host: "{{ SN_HOST }}"
-          api_key: "{{ SN_API_KEY | default(omit) }}"
-          username: "{{ SN_USERNAME | default(omit) }}"
-          password: "{{ SN_PASSWORD | default(omit) }}"
+          host: "{{ lookup('env','SN_HOST') | default(omit) }}"
+          # api_key: "{{ lookup('env','SN_API_KEY') | default(omit) }}"
+          username: "{{ lookup('env','SN_USERNAME') | default(omit) }}"
+          password: "{{ lookup('env','SN_PASSWORD') | default(omit) }}"
         state: closed
         number: "{{ incident_out.record.number }}"
         close_code: "Solved (Permanently)"
