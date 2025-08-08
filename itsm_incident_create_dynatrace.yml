@@ -5,8 +5,6 @@
 
   tasks:
     - name: Create incident
-      tags:
-        - create_incident
       servicenow.itsm.incident:
         instance:
           host: "{{ lookup('env','SN_HOST') | default(omit) }}"
