@@ -1,6 +1,6 @@
 ---
 
-- name: Create ServiceNow incident ticket
+- name: Create ServiceNow change request
   hosts: "{{ _hosts | default(omit) }}"
   gather_facts: false
   vars:
