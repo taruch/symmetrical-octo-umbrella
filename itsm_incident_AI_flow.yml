@@ -12,7 +12,7 @@
           password: "{{ SN_PASSWORD }}"
         state: new
         caller: admin
-        short_description: Incident from Ansible Incident AI Flow
+        short_description: Incident from Ansible AI Workflow
         description: >
           {{ slack_message | default('No description provided') }}
           \n
