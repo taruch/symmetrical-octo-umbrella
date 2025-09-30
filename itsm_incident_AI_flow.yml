@@ -11,7 +11,7 @@
           username: "{{ SN_USERNAME }}"
           password: "{{ SN_PASSWORD }}"
         state: new
-        caller: splunk_ansible_workflow
+        caller: admin
         short_description: Incident from ITSM Incident AI Flow
         description: "{{ slack_message | default('No description provided') }}\n{{ rca_prompt | default('No RCA provided') }}"
         impact: med
