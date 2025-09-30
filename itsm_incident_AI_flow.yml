@@ -15,10 +15,11 @@
         short_description: Incident from Ansible AI Workflow
         description: >
           {{ slack_message | default('No description provided') }}
-          \n
+          
           {{ rca_prompt | default('No RCA provided') }}
-          \n
+          
           {{ rca_response.content | default('No RCA response provided') }}
+
         impact: med
         urgency: med
         other:
