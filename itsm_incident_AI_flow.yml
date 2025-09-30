@@ -13,7 +13,10 @@
         state: new
         caller: admin
         short_description: Incident from ITSM Incident AI Flow
-        description: "{{ slack_message | default('No description provided') }}\n{{ rca_prompt | default('No RCA provided') }}"
+        description: >
+          {{ slack_message | default('No description provided') }}
+          {{ rca_prompt | default('No RCA provided') }}
+          {{ rca_response.content | default('No RCA response provided') }}
         impact: med
         urgency: med
         other:
