@@ -12,10 +12,12 @@
           password: "{{ SN_PASSWORD }}"
         state: new
         caller: admin
-        short_description: Incident from ITSM Incident AI Flow
+        short_description: Incident from Ansible Incident AI Flow
         description: >
           {{ slack_message | default('No description provided') }}
+          \n
           {{ rca_prompt | default('No RCA provided') }}
+          \n
           {{ rca_response.content | default('No RCA response provided') }}
         impact: med
         urgency: med
