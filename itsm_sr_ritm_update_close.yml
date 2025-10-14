@@ -4,8 +4,7 @@
   gather_facts: false
   # Define all your ServiceNow variables in one place for easy editing
   vars:
-    request_number: "REQ0010284"  # <-- The Request number to close
-    # ritm_number: "RITM0010298" # <-- The Requested Item number to close
+    request_number: "{{ ticket_number }}"  # <-- The Request number to close
     closing_comment: "Automated process has successfully completed all tasks. This item will now be closed."
     close_notes: "Request completed and resolved via Ansible automation."
     snow_instance: "{{ lookup('env', 'SN_HOST') | default(omit) }}"
