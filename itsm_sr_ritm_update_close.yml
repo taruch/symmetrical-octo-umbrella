@@ -1,0 +1,149 @@
+---
+- name: Update ServiceNow record
+  hosts: localhost
+  gather_facts: false
+  # Define all your ServiceNow variables in one place for easy editing
+  vars:
+    request_number: "REQ0010284"  # <-- The Request number to close
+    # ritm_number: "RITM0010298" # <-- The Requested Item number to close
+    closing_comment: "Automated process has successfully completed all tasks. This item will now be closed."
+    close_notes: "Request completed and resolved via Ansible automation."
+    snow_instance: "{{ lookup('env', 'SN_HOST') | default(omit) }}"
+    snow_username: "{{ lookup('env', 'SN_USERNAME') | default(omit) }}"
+    snow_password: "{{ lookup('env', 'SN_PASSWORD') | default(omit) }}"
+  tasks:
+
+
+  tasks:
+    # --- Task 1: Get the sys_id for the parent Request number ---
+    - name: "Get sys_id for Request {{ request_number }}"
+      servicenow.itsm.api_info:
+        instance:
+          host: "{{ snow_instance }}"
+          username: "{{ snow_username }}"
+          password: "{{ snow_password }}"
+        resource: sc_request  # The table for Service Requests
+        sysparm_query: "number={{ request_number }}"
+        columns: "sys_id" # We only need the sys_id for the next query
+      register: req_info
+
+    - name: Debug Request Info
+      ansible.builtin.debug:
+        var: req_info.record[0].sys_id
+        verbosity: 2
+
+    - name: Fail if parent Request was not found
+      ansible.builtin.fail:
+        msg: "Could not find a Service Request with the number '{{ request_number }}'."
+      when: req_info.record | length == 0
+
+    # --- Task 2: Find all RITMs that belong to the parent Request ---
+    - name: "Find RITMs associated with Request {{ request_number }}"
+      servicenow.itsm.api_info:
+        instance:
+          host: "{{ snow_instance }}"
+          username: "{{ snow_username }}"
+          password: "{{ snow_password }}"
+        resource: sc_req_item  # Now query the Requested Item table
+        sysparm_query: "request={{ req_info.record[0].sys_id }}" # Find RITMs where the 'request' field matches the parent's sys_id
+        columns: "number" # We only need the human-readable number
+      register: ritm_info
+
+    - name: Debug RITM Info
+      ansible.builtin.debug:
+        var: ritm_info
+        verbosity: 2
+
+    - name: Fail if no RITMs were found for the Request
+      ansible.builtin.fail:
+        msg: "Found Service Request '{{ request_number }}', but it has no associated Requested Items."
+      when: ritm_info.record | length == 0
+
+    # --- Task 3: Extract the RITM numbers into a clean list ---
+    - name: "Set RITM number(s) as a fact"
+      ansible.builtin.set_fact:
+        # The 'json_query' filter cleanly extracts just the 'number' value
+        # from each record in the list.
+        ritm_number: "{{ ritm_info.record[0].number }}"
+
+    # --- Task 4: Display the result ---
+    - name: "Display the found RITM number(s)"
+      ansible.builtin.debug:
+        msg: "Found RITM(s) for {{ request_number }}: {{ ritm_number }}"
+
+    # - name: Set RITM and parent REQ sys_id as facts for easier use
+    #   ansible.builtin.set_fact:
+    #     ritm_sys_id: "{{ ritm_info.record[0].sys_id }}"
+    #     # The 'request' field is an object; its 'value' key holds the sys_id
+    #     parent_req_sys_id: "{{ req_info.record[0].sys_id }}"
+
+
+    - name: "Get sys_id for RITM {{ ritm_number }}"
+      servicenow.itsm.api_info:
+        instance:
+          host: "{{ snow_instance }}"
+          username: "{{ snow_username }}"
+          password: "{{ snow_password }}"
+        resource: sc_req_item  # The table for Requested Items
+        sysparm_query: "number={{ ritm_number }}" # ServiceNow query string
+        columns: "sys_id"      # Comma-separated list of fields to return
+      register: ritm_details
+
+    - name: Fail if RITM was not found
+      ansible.builtin.fail:
+        msg: "Could not find a Requested Item with the number '{{ ritm_number }}'."
+      when: ritm_details.record | length == 0
+
+    - name: Display the discovered sys_id
+      ansible.builtin.debug:
+        msg: "The sys_id for {{ ritm_number }} is: {{ ritm_details.record[0].sys_id }}"
+
+
+
+    # --- Task 2: Add a final comment to the RITM using its sys_id ---
+    - name: "Add closing comment to RITM {{ ritm_number }}"
+      servicenow.itsm.api:
+        instance:
+          host: "{{ snow_instance }}"
+          username: "{{ snow_username }}"
+          password: "{{ snow_password }}"
+        action: patch
+        resource: sc_req_item
+        sys_id: "{{ ritm_details.record[0].sys_id }}"  # Use 'sys_id' instead of 'table_sys_id'
+        data:
+          comments: "{{ closing_comment }}"
+          state: "3" # IMPORTANT: Verify this value for 'Closed Complete' in your instance
+          close_notes: "{{ close_notes }}"
+
+    # # --- Task 3: Close the RITM using its sys_id ---
+    # - name: "Close RITM {{ ritm_number }}"
+    #   servicenow.itsm.api:
+    #     instance:
+    #       host: "{{ snow_instance }}"
+    #       username: "{{ snow_username }}"
+    #       password: "{{ snow_password }}"
+    #     action: patch
+    #     resource: sc_req_item
+    #     sys_id: "{{ ritm_details.record[0].sys_id }}"
+    #     data:
+    #       state: "3" # IMPORTANT: Verify this value for 'Closed Complete' in your instance
+    #       close_notes: "{{ close_notes }}"
+
+    # --- Task 4: Close the parent Request using its sys_id ---
+    - name: "Close Parent Request"
+      servicenow.itsm.api:
+        instance:
+          host: "{{ snow_instance }}"
+          username: "{{ snow_username }}"
+          password: "{{ snow_password }}"
+        action: patch
+        resource: sc_request
+        sys_id: "{{ req_info.record[0].sys_id }}"
+        data:
+          request_state: "closed_complete" # IMPORTANT: Verify this value in your instance
+          close_notes: "{{ close_notes }}"
+      register: request_update
+
+    - name: Display final request update result
+      ansible.builtin.debug:
+        var: request_update.record
