@@ -3,8 +3,6 @@
   hosts: localhost
   gather_facts: false
   # Define all the ServiceNow variables in one place for easy editing
-  vars_files:
-    - vars.yml
   vars:
     request_number: "{{ ticket_number }}"  # <-- The Request number to close
     close_notes: "Request completed and resolved via Ansible automation."
