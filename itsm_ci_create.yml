@@ -175,37 +175,23 @@
 
         - name: Update a configuration item
           servicenow.itsm.configuration_item:
+            instance: "{{ instance_data }}"
             sys_id: "{{ existing_ci_check.record[0].sys_id }}"
             install_status: installed
             operational_status: operational
             other:
+              # --- This is the payload for the new CI record ---
               name: "{{ ansible_fqdn }}"
-              ip_address: "{{ new_vm_info.ipv4 | default('') }}"
-              os: "{{ new_vm_info.hw_guest_full_name | default('Unknown OS') }}"
-              cpus: "{{ ((new_vm_info.hw_processor_count | int) * (new_vm_info.hw_cores_per_socket | int)) | default(vm_cores) }}"
+              ip_address: "{{ ansible_default_ipv4.address | default('') }}"
+              os: "{{ ansible_distribution_file_variety | default('Unknown OS') }} {{ ansible_distribution_version | default('') }}"
+              cpus: "{{ (ansible_processor_vcpus | int ) | default('') }}"
               managed_by: "Ansible Automation"
               owned_by: "{{ sn_user_email | default('') }}"
-              memory: "{{ memsize_MiB }}"
-              mac_address: "{{ new_vm_info.hw_eth0.macaddress | default('') }}"
+              memory: "{{ ansible_memtotal_mb }}"
+              mac_address: "{{ ansible_default_ipv4.macaddress | default('') }}"
               short_description: "Production application server managed by Ansible."
-              correlation_id: "{{ new_vm_info.instance_uuid }}"
-              # 'install_status' 7 is typically 'Installed'
-              # 'operational_status' 1 is typically 'Operational'
-              # VERIFY these values in your instance!
-              install_status: "7"
-              operational_status: "1"
-              vm_inst_id: "{{ new_vm_info.instance_uuid }}"
-              manufacturer: "VMware"
-              cluster_id: "{{ new_vm_info.hw_cluster }}"
-              model_id: "{{ new_vm_info.hw_guest_id | default('unknown') }}"
-              comments: "Created by {{ sn_user_name }} via Ansible Automation"
-              guest_id: "{{ new_vm_info.hw_guest_id | default('unknown') }}"
-              guest_os_fullname: "{{ new_vm_info.hw_guest_full_name | default('unknown') }}"
-              dns_domain: "{{ domain_name }}"
-              attestation_status: "attested"
-              attested_by: "{{ sn_user_name }}"
-              serial_number: "{{ new_vm_info.hw_product_uuid }}"
-
+              manufacturer: "Amazon Web Services"
+              attributes: "{{ ansible_facts | to_nice_yaml }}"
         # - name: "Create new VM instance CI for VMware '{{ ansible_fqdn }}'"
         #   servicenow.itsm.api:
         #     instance: "{{ instance_data }}"
