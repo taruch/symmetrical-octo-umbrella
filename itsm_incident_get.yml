@@ -1,0 +1,24 @@
+---
+- name: Create an incident ticket in ServiceNow
+  hosts: localhost
+  gather_facts: false
+  vars:
+    instance_data:
+      host: "{{ lookup('env', 'SN_HOST') | default(omit) }}"
+      username: "{{ lookup('env', 'SN_USERNAME') | default(omit) }}"
+      password: "{{ lookup('env', 'SN_PASSWORD') | default(omit) }}"
+
+  tasks:
+    - name: Create incident
+      # Supported parameters include: attachments, caller, close_code, close_notes, description, hold_reason, impact, incident_mapping, instance, number, other, short_description, state, sys_id, urgency.
+      servicenow.itsm.incident_info:
+        instance: "{{ instance_data }}"
+        number: "{{ incident_number }}"  # Specify the incident number to fetch details for
+      register: incident_out
+
+
+    - name: Print out incident number
+      ansible.builtin.debug:
+        msg: "Incident:\n {{ incident_out.records[0] }}"
+
+

@@ -2,23 +2,167 @@
 - name: Create an incident ticket in ServiceNow
   hosts: localhost
   gather_facts: false
-
+  vars:
+    instance_data:
+      host: "{{ lookup('env', 'SN_HOST') | default(omit) }}"
+      username: "{{ lookup('env', 'SN_USERNAME') | default(omit) }}"
+      password: "{{ lookup('env', 'SN_PASSWORD') | default(omit) }}"
   tasks:
     - name: Create incident
+      # Supported parameters include: attachments, caller, close_code, close_notes, description, hold_reason, impact, incident_mapping, instance, number, other, short_description, state, sys_id, urgency.
       servicenow.itsm.incident:
-        instance:
-          host: "{{ SN_HOST }}"
-          username: "{{ SN_USERNAME }}"
-          password: "{{ SN_PASSWORD }}"
+        instance: "{{ instance_data }}"
+
+        short_description: Really cool short description here
+        description: Really cool detailed description here
+        # resulted in: incident was created with provided short_description & description
+
+        # TEST Bad Data (state)
+        # state: denial --- Bad Data ---
+        # resulted in: incident was created with state New 
         state: new
-        caller: splunk_ansible_workflow
-        short_description: Block IP Workflow
-        description: Splunk AAP workflow blocking IP - ticket review
-        impact: med
-        urgency: med
+        # resulted in: incident was created with state New
+
+        # TEST Bad Data (caller)
+        # caller: somedude --- Bad Data ---
+        # resulted in: fatal: [localhost]: FAILED! => {"changed": false, "msg": "No api/now/table/sys_user records match the {'user_name': 'somedude', 'sysparm_exclude_reference_link': 'true', 'sysparm_limit': 1000} query."}
+        caller: truch
+        # resulted in: incident was created with caller truch
+
+        # TEST Bad Data (impact) - GOOD RESULT
+        # impact: superhigh --- Bad Data ---
+        # resulted in: incident was created with low impact
+        impact: high
+        # resulted in: incident was created with high impact 
+
+        # TEST Bad Data (urgency) - GOOD RESULT
+        # urgency: higherthanhigh --- Bad Data ---
+        # resulted in: incident was created with low urgency
+        urgency: high
+        # resulted in: incident was created with high urgency
+        
         other:
+          # additional_assignee_list: 
+          # approval: not requested
+          # approval_history: 
+          # approval_set: 
+          
+          # TEST Bad Data (assigned_to) - BAD RESULT
+          # assigned_to: "armani"
+          # resulted in:  "Unexpected response - 403 b'{\"error\":{\"message\":\"Operation Failed\",\"detail\":\"Operation against file \\'incident\\' was aborted by Business Rule \\'Abort changes on group^4fffbf06c3f9b250ceb9b4deb0013180\\'. Business Rule Stack:Abort changes on group\"},\"status\":\"failure\"}'"
+          # You probably would not want to do this, but this shows that it does NOT create the data in the associated table in ServiceNow
+          # The only time you would use this in an automated fashion is if you had a defined automation user in ServiceNow that you wanted to assign all Ansible created incidents to for follow-up
+
+          # TEST Bad Data (assignment_group) "Data Miners" - BAD RESULT
+          assignment_group: "Data Miners"
+          # resulted in: incident was created with assignment_group set to Data Miners - 
+          # BAD - This does allow insertion of bad data in the assignment_group field, but it does NOT create the data in the associated table in ServiceNow
+
+          # attachments: []
+          # business_duration: 
+          # business_impact: 
+          # business_service: 
+          # business_stc: 
+          # calendar_duration: 
+          # calendar_stc: 
+          # caller_id: 14fbb83c979da210804df8c11153af7d
+
+          # TEST category Bad Data - GOOD RESULT 
+          # category: "SomethingNotNetwork"
+          # Results in: incident was created with category set to "inquiry"
+          # category: "Network"
+          # Results in: incident was created with category set to "network"
+
+          
+          # cause: 
+          # caused_by: 
+          # child_incidents: 0
+          # close_code: 
+          # close_notes: 
+          # closed_at: 
+          # closed_by: 
+          
+          # cmdb_ci: "somethinginvalid"  # Bad Data
+          # resulted in: incident was created with cmdb_ci unset / blank
+          cmdb_ci: "ip-10-0-1-190.us-east-2.compute.internal"
+          # results in: incident was created with cmdb_ci set to ip-10-0-1-190.us-east-2.compute.internal
+          
+          # comments: 
+          # comments_and_work_notes: 
+          comments_and_work_notes: "Some comments here added via Ansible"
+
+          # company: 
+          # contact_type: "Dynatrace Alert"
+
+          # contract: 
+          # correlation_display: 
+          # correlation_id: 
+          # delivery_plan: 
+          # delivery_task: 
+          # due_date: 
+          # escalation: 0
+          
           expected_start: "{{ lookup('pipe','date +%Y%m%d%H%M%S')}}"
+
+          # follow_up: 
+          # group_list: 
+          # hold_reason: 
+          # incident_state: 1
+          # knowledge: false
+          # location: 
+          # made_sla: true
+          # notify: 1
+
+          # order: 
+          # origin_id: 
+          # origin_table: 
+          # parent: 
+          # parent_incident: 
+          # priority: 1
+          # problem_id: 
+          # reassignment_count: 0
+          # reopen_count: 0
+          # reopened_by: 
+          # reopened_time: 
+          # resolved_at: 
+          # resolved_by: 
+          # rfc: 
+          # route_reason: 
+          # service_offering: 
+          # severity: 3
+          # short_description: Really cool short description here
+          # sla_due: 
+          # state: new
+          # subcategory: 
+          # subcategory: The specific issue type (e.g., "OS", "CPU", "VPN").
+          # sys_class_name: incident
+          # sys_created_by: admin
+          # sys_created_on: 2025-12-15 13:32:55
+          # sys_domain: global
+          # sys_domain_path: /
+          # sys_id: 2ec5db82c3f5b250ceb9b4deb001310c
+          # sys_mod_count: 0
+          # sys_tags: 
+          # sys_updated_by: admin
+          # sys_updated_on: 2025-12-15 13:32:55
+          # task_effective_number: INC0011467
+          # time_worked: 
+          # universal_request: 
+          # upon_approval: proceed
+          # upon_reject: cancel
+          # user_input: 
+          # watch_list: 
+          # work_end: 
+          # work_notes: 
+          # work_notes_list: 
+          # work_start: 
+
       register: incident_out
+
+
+    - name: Print out incident number
+      ansible.builtin.debug:
+        msg: "Created incident number: {{ incident_out.record.number }}"
 
     - name: Set Incident Number
       ansible.builtin.set_stats:
