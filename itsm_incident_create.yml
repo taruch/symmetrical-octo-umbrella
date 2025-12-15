@@ -82,17 +82,24 @@
           # closed_at: 
           # closed_by: 
           
+          # TEST: cmdb_ci Bad Data - GOOD RESULT
           # cmdb_ci: "somethinginvalid"  # Bad Data
           # resulted in: incident was created with cmdb_ci unset / blank
           cmdb_ci: "ip-10-0-1-190.us-east-2.compute.internal"
           # results in: incident was created with cmdb_ci set to ip-10-0-1-190.us-east-2.compute.internal
           
           # comments: 
-          # comments_and_work_notes: 
-          comments_and_work_notes: "Some comments here added via Ansible"
+          #TEST (comments)
+          comments: "This is a test incident created via Ansible"
+          # resulted in: incident was created with comments set to "This is a test incident created via Ansible" in the comments field
 
-          # company: 
-          # contact_type: "Dynatrace Alert"
+          # TEST (company) Bad Data - UNKNOWN RESULT 
+          company: "Red Hat"
+          # resulted in: incident was created with company set to Red Hat
+
+          # TEST contact_type Bad Data - GOOD RESULT
+          contact_type: "Dynatrace Alert"
+          # resulted in: incident was created with contact_type unset / blank
 
           # contract: 
           # correlation_display: 
@@ -117,9 +124,23 @@
           # origin_id: 
           # origin_table: 
           # parent: 
+
+          # TEST parent_incident Bad Data - MOSTLY GOOD RESULT
           # parent_incident: 
+          parent_incident: "INC0011450"
+          # resulted in: incident was created with parent_incident set to INC0011450 in the incident table, BUT:
+          # - does not create a problem record in incident table
+          # - does not show up in the Web UI as a link to a nonexistent record
+
           # priority: 1
+
+          #TEST problem_id Bad Data - MOSTLY GOOD RESULT
           # problem_id: 
+          problem_id: "PRB0012345"
+          # resulted in: incident was created with problem_id set to PRB0012345 in the incident table, BUT:
+          # - does not create a problem record in associated problems table
+          # - does not show up in the Web UI as a link to a problem record
+
           # reassignment_count: 0
           # reopen_count: 0
           # reopened_by: 
