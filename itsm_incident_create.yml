@@ -47,9 +47,10 @@
           # approval_history: 
           # approval_set: 
           
-          # TEST Bad Data (assigned_to) - BAD RESULT
+          # TEST Bad Data (assigned_to) -  GOOD RESULT
           # assigned_to: "armani"
-          # resulted in:  "Unexpected response - 403 b'{\"error\":{\"message\":\"Operation Failed\",\"detail\":\"Operation against file \\'incident\\' was aborted by Business Rule \\'Abort changes on group^4fffbf06c3f9b250ceb9b4deb0013180\\'. Business Rule Stack:Abort changes on group\"},\"status\":\"failure\"}'"
+          # resulted in: incident was not created, with error message:
+          # "Unexpected response - 403 b'{\"error\":{\"message\":\"Operation Failed\",\"detail\":\"Operation against file \\'incident\\' was aborted by Business Rule \\'Abort changes on group^4fffbf06c3f9b250ceb9b4deb0013180\\'. Business Rule Stack:Abort changes on group\"},\"status\":\"failure\"}'"
           # You probably would not want to do this, but this shows that it does NOT create the data in the associated table in ServiceNow
           # The only time you would use this in an automated fashion is if you had a defined automation user in ServiceNow that you wanted to assign all Ansible created incidents to for follow-up
 
