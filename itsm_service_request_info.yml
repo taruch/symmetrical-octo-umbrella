@@ -1,0 +1,34 @@
+---
+- name: Update ServiceNow record
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Get ServiceNow Requests
+      servicenow.itsm.api_info:
+        resource: sc_req_item
+        # resource: sc_request
+        sysparm_query: "number=RITM0010282"
+      register: result
+
+    - name: Debug ServiceNow Request
+      ansible.builtin.debug:
+        var: result
+        # var: result.record[0].sys_id
+        verbosity: 2
+      when: result is defined
+
+    # - name: Close ServiceNow Request
+    #   servicenow.itsm.api:
+    #     resource: sc_req_item
+    #     action: patch
+    #     sys_id: "{{ result.record[0].sys_id }}"
+    #     # table: sc_request
+    #     data:
+    #       state: "Closed Complete"  # Or the appropriate closed state value
+    #   register: request_update
+
+    # - name: Debug ServiceNow Request Update
+    #   debug:
+    #     var: request_update
+    #     verbosity: 2
