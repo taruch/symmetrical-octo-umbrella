@@ -1,37 +1,29 @@
 ---
-- name: Poll ServiceNow for New Incidents
-  hosts: all
-  sources:
-    - servicenow.itsm.records:
-        table: incident
-        # A basic query to look for new/active incidents.
-        # The plugin will poll based on this query.
-        interval: 20 # Polling interval in seconds
-        sysparm_query: "active=true^state=1"
-        remote_servicenow_timezone: "US/Eastern"
+- name: Create an incident ticket in ServiceNow
+  hosts: localhost
+  gather_facts: false
 
-  rules:
-    - name: Initial debug action
-      condition: event.sys_id is defined
-      action:
-        run_job_template:
-          name: "EDA ServiceNow Update"
-          organization: Default
-          job_args:
-            extra_vars:
-              message: From EDA ServiceNow source
-              req_sys_id: "{{ event.sys_id }}"
-              req_number: "{{ event.number }}"
-
-
-    - name: Match all new incidents
-      # The plugin returns the ServiceNow record under the 'record' key.
-      # This condition simply ensures a record was returned.
-      condition: event.record is defined
-      action:
-        print_event:
-          pretty: true
+  tasks:
+    - name: Update incident
+      servicenow.itsm.incident:
+        instance:
+          host: "{{ lookup('env', 'SN_HOST') | default(omit) }}"
+          # api_key: "{{ lookup('env', 'SN_API_KEY') | default(omit) }}"
+          username: "{{ lookup('env', 'SN_USERNAME') | default(omit) }}"
+          password: "{{ lookup('env', 'SN_PASSWORD') | default(omit) }}"
+        state: 2
+        number: "{{ req_number }}"
+        short_description: "Service Availability issue"
+        description: >
+          "{{ ansible_facts | to_nice_json | default('No event data provided') }}"
+        impact: med
+        urgency: med
+        other:
+          expected_start: "{{ lookup('pipe','date +%Y%m%d%H%M%S')}}"
+      register: incident_out
 
 
-
-...
+    - name: Set Incident Number
+      ansible.builtin.set_stats:
+        data:
+          ServiceNow_Incident_Number: "{{ incident_out.record.number }}"
