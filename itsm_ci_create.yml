@@ -1,6 +1,6 @@
 ---
 - name: Create a ServiceNow CMDB CI for a new Virtual Machine
-  hosts: "{{ localhost }}"
+  hosts: "{{ _hosts | default('omit') }}"
   gather_facts: false
   # serial: 5
   vars:
