@@ -1,3 +1,4 @@
 *.log
 *-artifact-*.json
 collections/ansible_collections
+set_sn_vars
